@@ -8,72 +8,72 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f7f7f5;
-  min-height: 100vh;
-  padding: 2rem 1rem;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+background: #f7f7f5;
+min-height: 100vh;
+padding: 2rem 1rem;
 }
 .wrap { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
 h1 { font-size: 16px; font-weight: 600; color: #1a1a1a; display: flex; align-items: center; gap: 8px; }
 .card {
-  background: #fff;
-  border: 1px solid #e5e5e3;
-  border-radius: 12px;
-  padding: 1.25rem 1.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+background: #fff;
+border: 1px solid #e5e5e3;
+border-radius: 12px;
+padding: 1.25rem 1.4rem;
+display: flex;
+flex-direction: column;
+gap: 10px;
 }
 .card-title { font-size: 13px; font-weight: 600; color: #6b6b6b; text-transform: uppercase; letter-spacing: 0.05em; }
 textarea {
-  width: 100%;
-  min-height: 120px;
-  font-size: 12px;
-  padding: 10px 12px;
-  border: 1px solid #d9d9d6;
-  border-radius: 8px;
-  background: #fafafa;
-  resize: vertical;
-  outline: none;
-  font-family: monospace;
-  color: #1a1a1a;
-  transition: border-color 0.15s;
+width: 100%;
+min-height: 120px;
+font-size: 12px;
+padding: 10px 12px;
+border: 1px solid #d9d9d6;
+border-radius: 8px;
+background: #fafafa;
+resize: vertical;
+outline: none;
+font-family: monospace;
+color: #1a1a1a;
+transition: border-color 0.15s;
 }
 textarea:focus { border-color: #8b7cf8; }
 .upload-area {
-  border: 2px dashed #d9d9d6;
-  border-radius: 8px;
-  padding: 1.2rem;
-  text-align: center;
-  cursor: pointer;
-  color: #aaa;
-  font-size: 13px;
-  transition: border-color 0.15s, background 0.15s;
+border: 2px dashed #d9d9d6;
+border-radius: 8px;
+padding: 1.2rem;
+text-align: center;
+cursor: pointer;
+color: #aaa;
+font-size: 13px;
+transition: border-color 0.15s, background 0.15s;
 }
 .upload-area:hover { border-color: #8b7cf8; background: #f9f8ff; color: #8b7cf8; }
 .upload-area input { display: none; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn {
-  font-size: 13px;
-  padding: 9px 18px;
-  border-radius: 8px;
-  border: 1px solid #d9d9d6;
-  background: #fff;
-  color: #1a1a1a;
-  cursor: pointer;
-  transition: background 0.12s;
+font-size: 13px;
+padding: 9px 18px;
+border-radius: 8px;
+border: 1px solid #d9d9d6;
+background: #fff;
+color: #1a1a1a;
+cursor: pointer;
+transition: background 0.12s;
 }
 .btn:hover { background: #f2f2f0; }
 .btn-purple { background: #8b7cf8; color: #fff; border-color: #8b7cf8; }
 .btn-purple:hover { background: #7a6be0; }
 .btn-sm { font-size: 12px; padding: 6px 12px; }
 .settings-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  color: #555;
-  align-items: flex-start;
+display: flex;
+gap: 16px;
+flex-wrap: wrap;
+font-size: 13px;
+color: #555;
+align-items: flex-start;
 }
 .settings-row label { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .settings-row label.stack { flex-direction: column; align-items: flex-start; gap: 4px; }
@@ -81,38 +81,38 @@ textarea:focus { border-color: #8b7cf8; }
 .settings-row input[type="date"],
 .settings-row input[type="text"],
 .settings-row input[type="number"] {
-  font-size: 13px;
-  padding: 4px 8px;
-  border: 1px solid #d9d9d6;
-  border-radius: 6px;
-  background: #fafafa;
-  outline: none;
+font-size: 13px;
+padding: 4px 8px;
+border: 1px solid #d9d9d6;
+border-radius: 6px;
+background: #fafafa;
+outline: none;
 }
 .divider { height: 1px; background: #e5e5e3; }
 .report-tabs { display: flex; gap: 6px; }
 .tab {
-  font-size: 13px;
-  padding: 7px 16px;
-  border-radius: 8px 8px 0 0;
-  border: 1px solid #e5e5e3;
-  border-bottom: none;
-  background: #f7f7f5;
-  color: #999;
-  cursor: pointer;
+font-size: 13px;
+padding: 7px 16px;
+border-radius: 8px 8px 0 0;
+border: 1px solid #e5e5e3;
+border-bottom: none;
+background: #f7f7f5;
+color: #999;
+cursor: pointer;
 }
 .tab.active { background: #fff; color: #1a1a1a; font-weight: 600; }
 .report-box {
-  background: #f7f7f5;
-  border: 1px solid #e5e5e3;
-  border-radius: 0 10px 10px 10px;
-  padding: 1rem 1.1rem;
-  font-size: 13px;
-  line-height: 1.9;
-  color: #1a1a1a;
-  white-space: pre-wrap;
-  word-break: keep-all;
-  min-height: 80px;
-  font-family: inherit;
+background: #f7f7f5;
+border: 1px solid #e5e5e3;
+border-radius: 0 10px 10px 10px;
+padding: 1rem 1.1rem;
+font-size: 13px;
+line-height: 1.9;
+color: #1a1a1a;
+white-space: pre-wrap;
+word-break: keep-all;
+min-height: 80px;
+font-family: inherit;
 }
 .copy-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
 .copy-done { font-size: 12px; color: #22a06b; opacity: 0; transition: opacity 0.3s; }
@@ -127,106 +127,106 @@ textarea:focus { border-color: #8b7cf8; }
 .status-bar.ok { color: #22a06b; }
 .status-bar.err { color: #e5534b; }
 .col-map {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  background: #f7f7f5;
-  border: 1px solid #e5e5e3;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 12px;
-  color: #555;
+display: none;
+flex-direction: column;
+gap: 8px;
+background: #f7f7f5;
+border: 1px solid #e5e5e3;
+border-radius: 8px;
+padding: 10px 12px;
+font-size: 12px;
+color: #555;
 }
 .col-map.show { display: flex; }
 .col-map-row { display: flex; align-items: center; gap: 8px; }
 .col-map-row label { min-width: 80px; }
 .col-map-row input {
-  width: 60px;
-  font-size: 12px;
-  padding: 4px 8px;
-  border: 1px solid #d9d9d6;
-  border-radius: 6px;
-  text-align: center;
-  background: #fff;
-  outline: none;
+width: 60px;
+font-size: 12px;
+padding: 4px 8px;
+border: 1px solid #d9d9d6;
+border-radius: 6px;
+text-align: center;
+background: #fff;
+outline: none;
 }
 
 /* ── 과정 스위처 ── */
 .switcher-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  background: #fff;
-  border: 1px solid #e5e5e3;
-  border-radius: 12px;
-  padding: 10px 14px;
+display: flex;
+align-items: center;
+gap: 6px;
+flex-wrap: wrap;
+background: #fff;
+border: 1px solid #e5e5e3;
+border-radius: 12px;
+padding: 10px 14px;
 }
 .switcher-label {
-  font-size: 12px;
-  color: #aaa;
-  white-space: nowrap;
-  margin-right: 2px;
+font-size: 12px;
+color: #aaa;
+white-space: nowrap;
+margin-right: 2px;
 }
 .profile-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1.5px solid #d9d9d6;
-  background: #fff;
-  color: #3d3d3d;
-  cursor: pointer;
-  transition: all 0.12s;
-  white-space: nowrap;
+display: inline-flex;
+align-items: center;
+gap: 5px;
+font-size: 13px;
+padding: 5px 12px;
+border-radius: 20px;
+border: 1.5px solid #d9d9d6;
+background: #fff;
+color: #3d3d3d;
+cursor: pointer;
+transition: all 0.12s;
+white-space: nowrap;
 }
 .profile-chip:hover { border-color: #8b7cf8; color: #6c4ef2; background: #f9f8ff; }
 .profile-chip.active { background: #8b7cf8; border-color: #8b7cf8; color: #fff; font-weight: 600; }
 .profile-chip .del-x {
-  font-size: 11px;
-  opacity: 0.5;
-  margin-left: 2px;
-  line-height: 1;
+font-size: 11px;
+opacity: 0.5;
+margin-left: 2px;
+line-height: 1;
 }
 .profile-chip:hover .del-x { opacity: 1; }
 .profile-chip.active .del-x { opacity: 0.7; }
 .add-chip-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1.5px dashed #d9d9d6;
-  background: transparent;
-  color: #aaa;
-  cursor: pointer;
-  transition: all 0.12s;
-  white-space: nowrap;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+font-size: 13px;
+padding: 5px 12px;
+border-radius: 20px;
+border: 1.5px dashed #d9d9d6;
+background: transparent;
+color: #aaa;
+cursor: pointer;
+transition: all 0.12s;
+white-space: nowrap;
 }
 .add-chip-btn:hover { border-color: #8b7cf8; color: #6c4ef2; }
 
 /* ── 추가 폼 (인라인) ── */
 .add-form {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  width: 100%;
-  padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 4px;
+display: none;
+align-items: center;
+gap: 6px;
+flex-wrap: wrap;
+width: 100%;
+padding-top: 8px;
+border-top: 1px solid #f0f0f0;
+margin-top: 4px;
 }
 .add-form.show { display: flex; }
 .add-form input {
-  font-size: 13px;
-  padding: 5px 9px;
-  border: 1px solid #d9d9d6;
-  border-radius: 8px;
-  background: #fafafa;
-  outline: none;
+font-size: 13px;
+padding: 5px 9px;
+border: 1px solid #d9d9d6;
+border-radius: 8px;
+background: #fafafa;
+outline: none;
 }
 .add-form input:focus { border-color: #8b7cf8; }
 .add-form input.course-in { width: 70px; }
@@ -237,97 +237,96 @@ textarea:focus { border-color: #8b7cf8; }
 <body>
 <div class="wrap">
 
-  <h1>
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-    출결 보고 생성기
-  </h1>
+<h1>
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+출결 보고 생성기
+</h1>
 
-  <!-- ── 과정 스위처 ── -->
-  <div class="switcher-bar" id="switcher-bar">
-    <span class="switcher-label">과정 · 기수</span>
-    <div id="chip-list" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
-    <button class="add-chip-btn" id="add-chip-btn" onclick="toggleAddForm()">＋ 추가</button>
-    <div class="add-form" id="add-form">
-      <input type="text"   class="course-in" id="new-course"  placeholder="예) DA" />
-      <input type="number" class="cohort-in" id="new-cohort"  placeholder="15" min="1" />
-      <span style="font-size:13px;color:#555;">기</span>
-      <button class="btn btn-sm btn-purple" onclick="addProfile()">저장</button>
-      <button class="btn btn-sm" onclick="toggleAddForm()">취소</button>
-    </div>
-  </div>
+<!-- ── 과정 스위처 ── -->
+<div class="switcher-bar" id="switcher-bar">
+<span class="switcher-label">과정 · 기수</span>
+<div id="chip-list" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
+<button class="add-chip-btn" id="add-chip-btn" onclick="toggleAddForm()">＋ 추가</button>
+<div class="add-form" id="add-form">
+<input type="text" class="course-in" id="new-course" placeholder="예) DA" />
+<input type="number" class="cohort-in" id="new-cohort" placeholder="15" min="1" />
+<span style="font-size:13px;color:#555;">기</span>
+<button class="btn btn-sm btn-purple" onclick="addProfile()">저장</button>
+<button class="btn btn-sm" onclick="toggleAddForm()">취소</button>
+</div>
+</div>
 
-  <!-- 기준 설정 -->
-  <div class="card">
-    <div class="card-title">기준 설정</div>
-    <input type="hidden" id="course-name" />
-    <input type="hidden" id="course-gen" />
-    <div class="settings-row">
-      <label>날짜 <input type="date" id="report-date" /></label>
-      <label>지각 기준 <input type="time" id="late-threshold" value="09:11" /></label>
-      <label>조퇴 기준 <input type="time" id="early-leave-threshold" value="18:50" /></label>
-    </div>
-    <div class="divider"></div>
-    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
-      <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
-        <span style="font-weight:600;font-size:13px;color:#555;">오전 보고 휴공가</span>
-        <span style="font-size:11px;color:#aaa;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</span>
-        <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="width:100%;" />
-        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-          <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
-          <span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
-        </div>
-      </div>
-      <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
-        <span style="font-weight:600;font-size:13px;color:#555;">출석입력요청 검토 결과</span>
-        <label style="gap:6px;">검토 대상 <input type="number" id="review-count" value="0" style="width:55px;" min="0" /></label>
-        <label style="gap:6px;">검토 결과 <input type="text" id="review-result" value="이상 없음" style="width:160px;" /></label>
-      </div>
-    </div>
-  </div>
+<!-- 기준 설정 -->
+<div class="card">
+<div class="card-title">기준 설정</div>
+<input type="hidden" id="course-name" />
+<input type="hidden" id="course-gen" />
+<div class="settings-row">
+<label>날짜 <input type="date" id="report-date" /></label>
+<label>지각 기준 <input type="time" id="late-threshold" value="09:11" /></label>
+<label>조퇴 기준 <input type="time" id="early-leave-threshold" value="18:50" /></label>
+</div>
+<div class="divider"></div>
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+<div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
+<span style="font-weight:600;font-size:13px;color:#555;">오전 보고 휴공가</span>
+<span style="font-size:11px;color:#aaa;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</span>
+<input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="width:100%;" />
+<div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+<button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
+<span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
+</div>
+</div>
+<div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
+<span style="font-weight:600;font-size:13px;color:#555;">출석입력요청 검토 결과</span>
+<label style="gap:6px;">검토 대상 <input type="number" id="review-count" value="0" style="width:55px;" min="0" /></label>
+<label style="gap:6px;">검토 결과 <input type="text" id="review-result" value="이상 없음" style="width:160px;" /></label>
+</div>
+</div>
+</div>
 
-  <!-- 데이터 입력 -->
-  <div class="card">
-    <div class="card-title">출결 데이터 입력</div>
-    <label class="upload-area" for="file-input">
-      <input type="file" id="file-input" accept=".xlsx,.xls" onchange="handleFile(event)" />
-      📂 xlsx 파일 클릭하여 업로드
-    </label>
-    <div style="text-align:center;font-size:12px;color:#aaa;">또는</div>
-    <textarea id="paste-area" placeholder="엑셀에서 전체 선택(Ctrl+A) → 복사(Ctrl+C) 후 여기에 붙여넣기 (Ctrl+V)"></textarea>
-    <div id="col-map" class="col-map">
-      <div style="font-weight:600;margin-bottom:4px;">열 번호 수동 설정 (0부터 시작)</div>
-      <div class="col-map-row"><label>성명</label><input id="col-name" type="number" value="1" min="0" /></div>
-      <div class="col-map-row"><label>훈련상태</label><input id="col-status" type="number" value="5" min="0" /></div>
-      <div class="col-map-row"><label>출결상태</label><input id="col-attend" type="number" value="6" min="0" /></div>
-      <div class="col-map-row"><label>입실시각</label><input id="col-entry" type="number" value="7" min="0" /></div>
-      <div class="col-map-row"><label>퇴실시각</label><input id="col-exit" type="number" value="8" min="0" /></div>
-      <div class="col-map-row"><label>외출시작</label><input id="col-out-start" type="number" value="9" min="0" /></div>
-      <div class="col-map-row"><label>외출복귀</label><input id="col-out-end" type="number" value="10" min="0" /></div>
-      <div class="col-map-row"><label>휴공가상태</label><input id="col-leave-status" type="number" value="12" min="0" /></div>
-    </div>
-    <div class="row">
-      <button class="btn btn-purple" onclick="analyze()">분석하기</button>
-      <button class="btn btn-sm" onclick="toggleColMap()">열 번호 수동 설정</button>
-      <button class="btn btn-sm" onclick="clearAll()">초기화</button>
-    </div>
-    <div id="status-bar" class="status-bar"></div>
-  </div>
+<!-- 데이터 입력 -->
+<div class="card">
+<div class="card-title">출결 데이터 입력</div>
+<label class="upload-area" for="file-input">
+<input type="file" id="file-input" accept=".xlsx,.xls" onchange="handleFile(event)" />
+📂 xlsx 파일 클릭하여 업로드
+</label>
+<div style="text-align:center;font-size:12px;color:#aaa;">또는</div>
+<textarea id="paste-area" placeholder="엑셀에서 전체 선택(Ctrl+A) → 복사(Ctrl+C) 후 여기에 붙여넣기 (Ctrl+V)"></textarea>
+<div id="col-map" class="col-map">
+<div style="font-weight:600;margin-bottom:4px;">열 번호 수동 설정 (0부터 시작)</div>
+<div class="col-map-row"><label>성명</label><input id="col-name" type="number" value="1" min="0" /></div>
+<div class="col-map-row"><label>훈련상태</label><input id="col-status" type="number" value="5" min="0" /></div>
+<div class="col-map-row"><label>출결상태</label><input id="col-attend" type="number" value="6" min="0" /></div>
+<div class="col-map-row"><label>입실시각</label><input id="col-entry" type="number" value="7" min="0" /></div>
+<div class="col-map-row"><label>퇴실시각</label><input id="col-exit" type="number" value="8" min="0" /></div>
+<div class="col-map-row"><label>외출시작</label><input id="col-out-start" type="number" value="9" min="0" /></div>
+<div class="col-map-row"><label>외출복귀</label><input id="col-out-end" type="number" value="10" min="0" /></div>
+<div class="col-map-row"><label>휴공가상태</label><input id="col-leave-status" type="number" value="12" min="0" /></div>
+</div>
+<div class="row">
+<button class="btn btn-purple" onclick="analyze()">분석하기</button>
+<button class="btn btn-sm" onclick="toggleColMap()">열 번호 수동 설정</button>
+<button class="btn btn-sm" onclick="clearAll()">초기화</button>
+</div>
+<div id="status-bar" class="status-bar"></div>
+</div>
 
-  <!-- 보고 출력 -->
-  <div class="card" id="report-card" style="display:none;">
-    <div class="card-title">보고 멘트</div>
-    <div class="report-tabs">
-      <div class="tab active" onclick="switchTab('morning')">오전 보고</div>
-      <div class="tab" onclick="switchTab('afternoon')">오후 보고</div>
-      <div class="tab" onclick="switchTab('final')">최종 보고</div>
-    </div>
-    <div class="report-box" id="report-text"></div>
-    <div class="copy-row">
-      <button class="btn btn-sm" onclick="copyReport()">복사하기</button>
-      <span class="copy-done" id="copy-done">복사됨!</span>
-      
-    </div>
-  </div>
+<!-- 보고 출력 -->
+<div class="card" id="report-card" style="display:none;">
+<div class="card-title">보고 멘트</div>
+<div class="report-tabs">
+<div class="tab active" onclick="switchTab('morning')">오전 보고</div>
+<div class="tab" onclick="switchTab('afternoon')">오후 보고</div>
+<div class="tab" onclick="switchTab('final')">최종 보고</div>
+</div>
+<div class="report-box" id="report-text"></div>
+<div class="copy-row">
+<button class="btn btn-sm" onclick="copyReport()">복사하기</button>
+<span class="copy-done" id="copy-done">복사됨!</span>
+</div>
+</div>
 </div>
 
 <script>
@@ -335,308 +334,306 @@ const PROFILES_KEY = 'report_profiles_v2';
 let activeIdx = -1;
 
 function getProfiles() {
-  try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '[]'); }
-  catch { return []; }
+try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '[]'); }
+catch { return []; }
 }
 function saveProfiles(arr) { localStorage.setItem(PROFILES_KEY, JSON.stringify(arr)); }
 
 function renderChips() {
-  const profiles = getProfiles();
-  const list = document.getElementById('chip-list');
-  list.innerHTML = profiles.map((p, i) => `
-    <button class="profile-chip ${i === activeIdx ? 'active' : ''}" onclick="switchProfile(${i})">
-      ${p.label}
-      <span class="del-x" onclick="event.stopPropagation(); deleteProfile(${i})">✕</span>
-    </button>
-  `).join('');
+const profiles = getProfiles();
+const list = document.getElementById('chip-list');
+list.innerHTML = profiles.map((p, i) => `
+<button class="profile-chip ${i === activeIdx ? 'active' : ''}" onclick="switchProfile(${i})">
+${p.label}
+<span class="del-x" onclick="event.stopPropagation(); deleteProfile(${i})">✕</span>
+</button>
+`).join('');
 }
 
 function switchProfile(i) {
-  const profiles = getProfiles();
-  const p = profiles[i];
-  if (!p) return;
-  activeIdx = i;
-  document.getElementById('course-name').value = p.course || '';
-  document.getElementById('course-gen').value  = p.cohort || '';
-  if (p.late)  document.getElementById('late-threshold').value = p.late;
-  if (p.early) document.getElementById('early-leave-threshold').value = p.early;
-  document.title = `출결 보고 · ${p.label}`;
-  clearData();
-  renderChips();
+const profiles = getProfiles();
+const p = profiles[i];
+if (!p) return;
+activeIdx = i;
+document.getElementById('course-name').value = p.course || '';
+document.getElementById('course-gen').value = p.cohort || '';
+if (p.late) document.getElementById('late-threshold').value = p.late;
+if (p.early) document.getElementById('early-leave-threshold').value = p.early;
+document.title = `출결 보고 · ${p.label}`;
+clearData();
+renderChips();
 }
 
 function deleteProfile(i) {
-  const profiles = getProfiles();
-  profiles.splice(i, 1);
-  saveProfiles(profiles);
-  if (activeIdx === i) activeIdx = -1;
-  else if (activeIdx > i) activeIdx--;
-  renderChips();
+const profiles = getProfiles();
+profiles.splice(i, 1);
+saveProfiles(profiles);
+if (activeIdx === i) activeIdx = -1;
+else if (activeIdx > i) activeIdx--;
+renderChips();
 }
 
 function toggleAddForm() {
-  const form = document.getElementById('add-form');
-  form.classList.toggle('show');
-  if (form.classList.contains('show')) {
-    document.getElementById('new-course').focus();
-  } else {
-    document.getElementById('new-course').value = '';
-    document.getElementById('new-cohort').value = '';
-  }
+const form = document.getElementById('add-form');
+form.classList.toggle('show');
+if (form.classList.contains('show')) {
+document.getElementById('new-course').focus();
+} else {
+document.getElementById('new-course').value = '';
+document.getElementById('new-cohort').value = '';
+}
 }
 
 function addProfile() {
-  const course = document.getElementById('new-course').value.trim();
-  const cohort = document.getElementById('new-cohort').value.trim();
-  if (!course && !cohort) return;
-  const label = `${course}${cohort ? ` ${cohort}기` : ''}`.trim();
-  const late  = document.getElementById('late-threshold').value  || '09:11';
-  const early = document.getElementById('early-leave-threshold').value || '18:50';
-  const profiles = getProfiles();
-  if (profiles.find(p => p.label === label)) {
-    const idx = profiles.findIndex(p => p.label === label);
-    switchProfile(idx);
-  } else {
-    profiles.push({ label, course, cohort, late, early });
-    saveProfiles(profiles);
-    activeIdx = profiles.length - 1;
-    switchProfile(activeIdx);
-  }
-  toggleAddForm();
+const course = document.getElementById('new-course').value.trim();
+const cohort = document.getElementById('new-cohort').value.trim();
+if (!course && !cohort) return;
+const label = `${course}${cohort ? ` ${cohort}기` : ''}`.trim();
+const late = document.getElementById('late-threshold').value || '09:11';
+const early = document.getElementById('early-leave-threshold').value || '18:50';
+const profiles = getProfiles();
+if (profiles.find(p => p.label === label)) {
+const idx = profiles.findIndex(p => p.label === label);
+switchProfile(idx);
+} else {
+profiles.push({ label, course, cohort, late, early });
+saveProfiles(profiles);
+activeIdx = profiles.length - 1;
+switchProfile(activeIdx);
+}
+toggleAddForm();
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('add-form').classList.contains('show')) addProfile();
+if (e.key === 'Enter' && document.getElementById('add-form').classList.contains('show')) addProfile();
 });
 
 (function init() {
-  const now = new Date();
-  document.getElementById('report-date').value =
-    `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  const p = new URLSearchParams(location.search);
-  if (p.get('course') || p.get('cohort')) {
-    document.getElementById('course-name').value = p.get('course') || '';
-    document.getElementById('course-gen').value  = p.get('cohort') || '';
-    if (p.get('late'))  document.getElementById('late-threshold').value = p.get('late');
-    if (p.get('early')) document.getElementById('early-leave-threshold').value = p.get('early');
-  }
-  renderChips();
-  if (getProfiles().length === 0) toggleAddForm();
+const now = new Date();
+document.getElementById('report-date').value =
+`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+const p = new URLSearchParams(location.search);
+if (p.get('course') || p.get('cohort')) {
+document.getElementById('course-name').value = p.get('course') || '';
+document.getElementById('course-gen').value = p.get('cohort') || '';
+if (p.get('late')) document.getElementById('late-threshold').value = p.get('late');
+if (p.get('early')) document.getElementById('early-leave-threshold').value = p.get('early');
+}
+renderChips();
+if (getProfiles().length === 0) toggleAddForm();
 })();
 
 let reports = { morning:'', afternoon:'', final:'' };
 let activeTab = 'morning';
-let morningLeaveNames = []; // 오전 휴공가 저장된 이름 목록
+let morningLeaveNames = [];
 
 function handleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const wb  = XLSX.read(ev.target.result, { type: 'array' });
-    const ws  = wb.Sheets[wb.SheetNames[0]];
-    const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
-    document.getElementById('paste-area').value = raw;
-    setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
-  };
-  reader.readAsArrayBuffer(file);
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = ev => {
+const wb = XLSX.read(ev.target.result, { type: 'array' });
+const ws = wb.Sheets[wb.SheetNames[0]];
+const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
+document.getElementById('paste-area').value = raw;
+setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
+};
+reader.readAsArrayBuffer(file);
 }
 
 function parseRows(text) {
-  return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
+return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
 }
 function isEmpty(v) { return !v || v === '-' || v === '' || v === 'null' || v === 'undefined'; }
 function autoDetectCols(rows) {
-  const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
-  rows.slice(0,3).forEach(row => {
-    row.forEach((cell, i) => {
-      const c = (cell||'').replace(/\s|\n/g,'');
-      if (c==='성명'    && map.name    ===-1) map.name    = i;
-      if (c==='상태'    && map.status  ===-1) map.status  = i;
-      if (c==='출결상태' && map.attend ===-1) map.attend  = i;
-      if (c.includes('입실') && map.entry   ===-1) map.entry   = i;
-      if (c.includes('퇴실') && map.exit    ===-1) map.exit    = i;
-      if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
-      if (c.includes('복귀') && map.outEnd  ===-1) map.outEnd  = i;
-    });
-  });
-  return map;
+const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
+rows.slice(0,3).forEach(row => {
+row.forEach((cell, i) => {
+const c = (cell||'').replace(/\s|\n/g,'');
+if (c==='성명' && map.name ===-1) map.name = i;
+if (c==='상태' && map.status ===-1) map.status = i;
+if (c==='출결상태' && map.attend ===-1) map.attend = i;
+if (c.includes('입실') && map.entry ===-1) map.entry = i;
+if (c.includes('퇴실') && map.exit ===-1) map.exit = i;
+if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
+if (c.includes('복귀') && map.outEnd ===-1) map.outEnd = i;
+});
+});
+return map;
 }
 function parseTime(s) {
-  if (isEmpty(s)) return null;
-  const m = s.match(/(\d{1,2}):(\d{2})/);
-  return m ? parseInt(m[1])*60 + parseInt(m[2]) : null;
+if (isEmpty(s)) return null;
+const m = s.match(/(\d{1,2}):(\d{2})/);
+return m ? parseInt(m[1])*60 + parseInt(m[2]) : null;
 }
 function timeToMin(hhmm) { const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
 function fmtTime(s) {
-  if (isEmpty(s)) return '';
-  const m = s.match(/(\d{1,2}:\d{2})/);
-  return m ? m[1] : s;
+if (isEmpty(s)) return '';
+const m = s.match(/(\d{1,2}:\d{2})/);
+return m ? m[1] : s;
 }
 
 function analyze() {
-  const text = document.getElementById('paste-area').value.trim();
-  if (!text) { setStatus('데이터를 먼저 입력해주세요.', 'err'); return; }
-  const rows = parseRows(text);
-  const detected = autoDetectCols(rows);
-  const c = {
-    name:     detected.name    >=0 ? detected.name    : parseInt(document.getElementById('col-name').value),
-    status:   detected.status  >=0 ? detected.status  : parseInt(document.getElementById('col-status').value),
-    attend:   detected.attend  >=0 ? detected.attend  : parseInt(document.getElementById('col-attend').value),
-    entry:    detected.entry   >=0 ? detected.entry   : parseInt(document.getElementById('col-entry').value),
-    exit:     detected.exit    >=0 ? detected.exit    : parseInt(document.getElementById('col-exit').value),
-    outStart: detected.outStart>=0 ? detected.outStart: parseInt(document.getElementById('col-out-start').value),
-    outEnd:      detected.outEnd  >=0 ? detected.outEnd  : parseInt(document.getElementById('col-out-end').value),
-    leaveStatus: parseInt(document.getElementById('col-leave-status').value),
-  };
-  document.getElementById('col-name').value      = c.name;
-  document.getElementById('col-status').value    = c.status;
-  document.getElementById('col-attend').value    = c.attend;
-  document.getElementById('col-entry').value     = c.entry;
-  document.getElementById('col-exit').value      = c.exit;
-  document.getElementById('col-out-start').value = c.outStart;
-  document.getElementById('col-out-end').value   = c.outEnd;
-  const lateMin  = timeToMin(document.getElementById('late-threshold').value);
-  const earlyMin = timeToMin(document.getElementById('early-leave-threshold').value);
-  const course   = document.getElementById('course-name').value.trim();
-  const gen      = document.getElementById('course-gen').value.trim();
-  const dateVal = document.getElementById('report-date').value;
-  const DAY = ['일','월','화','수','목','금','토'];
-  let rd;
-  if (dateVal) { const [y,m,d]=dateVal.split('-').map(Number); rd=new Date(y,m-1,d); } else rd=new Date();
-  const dateStr = `${rd.getMonth()+1}/${rd.getDate()}(${DAY[rd.getDay()]})`;
-  const courseLabel = course ? `[${course}${gen?`_${gen}기`:''}] ` : '';
-  const reviewCount  = parseInt(document.getElementById('review-count').value)||0;
-  const reviewResult = document.getElementById('review-result').value.trim()||'이상 없음';
-  const exclude = ['중도탈락','조기취업','수료','훈련포기','자진퇴소'];
-  const dataRows = rows.filter(r => {
-    if (r.length<=c.name) return false;
-    const name=r[c.name]||'';
-    if (!name||name==='성명') return false;
-    if (isNaN(parseInt(r[0]))) return false;
-    const status=c.status>=0?(r[c.status]||''):'';
-    return !exclude.some(ex=>status.includes(ex));
-  });
-  if (dataRows.length===0) { setStatus('⚠ 수강생 데이터를 찾지 못했어요. 열 번호를 수동으로 확인해주세요.','err'); return; }
-  const total=dataRows.length, absent=[], late=[], earlyLeave=[], outing=[], noExitQR=[], leaveList=[];
-  dataRows.forEach(r => {
-    const name=r[c.name]||'';
-    const entryRaw=c.entry>=0?(r[c.entry]||''):'';
-    const exitRaw=c.exit>=0?(r[c.exit]||''):'';
-    const outStartRaw=c.outStart>=0?(r[c.outStart]||''):'';
-    const outEndRaw=c.outEnd>=0?(r[c.outEnd]||''):'';
-    const leaveStatusRaw=c.leaveStatus>=0?(r[c.leaveStatus]||''):'';
-    if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
-    const entryMin=parseTime(entryRaw), exitMin=parseTime(exitRaw);
-    const outStartMin=parseTime(outStartRaw), outEndMin=parseTime(outEndRaw);
-    if (entryMin===null && isEmpty(entryRaw)) { absent.push({name}); }
-    else {
-      if (entryMin!==null && entryMin>=lateMin) late.push({name,time:fmtTime(entryRaw)});
-      if (exitMin===null && isEmpty(exitRaw))   noExitQR.push({name});
-      if (exitMin!==null && exitMin<earlyMin)   earlyLeave.push({name,time:fmtTime(exitRaw)});
-    }
-    if (outStartMin!==null) outing.push({name,startTime:fmtTime(outStartRaw),endTime:outEndMin!==null?fmtTime(outEndRaw):null});
-  });
-  const presentCount=total-leaveList.length-absent.length;
-  const lateAbsentCount=absent.length+late.length;
-  let morning=`${courseLabel}${dateStr} 오전 출결 현황 공유\n• 출석: ${presentCount}명\n• 지각/미입실: ${lateAbsentCount}명`;
-  if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
-  morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  ◦ ${i}`;});
-  // 오전에 이미 저장된 휴공가는 오후 추가 휴공가에서 제외
-  const additionalLeave = morningLeaveNames.length > 0
-    ? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
-    : leaveList;
-  let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${presentCount}명\n• 외출: ${outing.length}명`;
-  if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
-  afternoon+=`\n• 추가 휴공가: ${additionalLeave.length}명`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  ◦ ${i}`;});
-  const irregular=[];
-  late.forEach(({name,time})=>irregular.push(`${name}(지각 ${time})`));
-  outing.forEach(({name,startTime,endTime})=>irregular.push(`${name}(외출 ${startTime}~${endTime||'미복귀'})`));
-  earlyLeave.forEach(({name,time})=>irregular.push(`${name}(조퇴 ${time})`));
-  let final=`${courseLabel}${dateStr} 최종 확정 출결 공유\n• 출석: ${presentCount}명\n• 퇴실 QR 미촬영: ${noExitQR.length}명`;
-  if(noExitQR.length>0)noExitQR.forEach(({name})=>{final+=`\n  ◦ ${name}`;});
-  final+=`\n• 지각/외출/조퇴: ${irregular.length}명`;if(irregular.length>0)irregular.forEach(i=>{final+=`\n  ◦ ${i}`;});
-  final+=`\n• 출석입력요청 검토 결과\n  ◦ 검토 대상: ${reviewCount}건\n  ◦ 검토 결과: ${reviewResult}`;
-  window._lastLeaveList = [...leaveList];
-  const mlInput = document.getElementById('morning-leave-input');
-  if (mlInput) { mlInput.value = leaveList.map(item => item.split('(')[0]).join(', '); }
-  reports={morning,afternoon,final};
-  document.getElementById('report-card').style.display='flex';
-  switchTab(activeTab);
-  setStatus(`✅ 분석 완료 — 총 ${total}명 | 출석 ${presentCount}명 | 지각/미입실 ${lateAbsentCount}명 | 외출 ${outing.length}명 | 휴공가 ${leaveList.length}명`,'ok');
-  document.getElementById('report-card').scrollIntoView({behavior:'smooth'});
+const text = document.getElementById('paste-area').value.trim();
+if (!text) { setStatus('데이터를 먼저 입력해주세요.', 'err'); return; }
+const rows = parseRows(text);
+const detected = autoDetectCols(rows);
+const c = {
+name: detected.name >=0 ? detected.name : parseInt(document.getElementById('col-name').value),
+status: detected.status >=0 ? detected.status : parseInt(document.getElementById('col-status').value),
+attend: detected.attend >=0 ? detected.attend : parseInt(document.getElementById('col-attend').value),
+entry: detected.entry >=0 ? detected.entry : parseInt(document.getElementById('col-entry').value),
+exit: detected.exit >=0 ? detected.exit : parseInt(document.getElementById('col-exit').value),
+outStart: detected.outStart>=0 ? detected.outStart: parseInt(document.getElementById('col-out-start').value),
+outEnd: detected.outEnd >=0 ? detected.outEnd : parseInt(document.getElementById('col-out-end').value),
+leaveStatus: parseInt(document.getElementById('col-leave-status').value),
+};
+document.getElementById('col-name').value = c.name;
+document.getElementById('col-status').value = c.status;
+document.getElementById('col-attend').value = c.attend;
+document.getElementById('col-entry').value = c.entry;
+document.getElementById('col-exit').value = c.exit;
+document.getElementById('col-out-start').value = c.outStart;
+document.getElementById('col-out-end').value = c.outEnd;
+const lateMin = timeToMin(document.getElementById('late-threshold').value);
+const earlyMin = timeToMin(document.getElementById('early-leave-threshold').value);
+const course = document.getElementById('course-name').value.trim();
+const gen = document.getElementById('course-gen').value.trim();
+const dateVal = document.getElementById('report-date').value;
+const DAY = ['일','월','화','수','목','금','토'];
+let rd;
+if (dateVal) { const [y,m,d]=dateVal.split('-').map(Number); rd=new Date(y,m-1,d); } else rd=new Date();
+const dateStr = `${rd.getMonth()+1}/${rd.getDate()}(${DAY[rd.getDay()]})`;
+const courseLabel = course ? `[${course}${gen?`_${gen}기`:''}] ` : '';
+const reviewCount = parseInt(document.getElementById('review-count').value)||0;
+const reviewResult = document.getElementById('review-result').value.trim()||'이상 없음';
+const exclude = ['중도탈락','조기취업','수료','훈련포기','자진퇴소'];
+const dataRows = rows.filter(r => {
+if (r.length<=c.name) return false;
+const name=r[c.name]||'';
+if (!name||name==='성명') return false;
+if (isNaN(parseInt(r[0]))) return false;
+const status=c.status>=0?(r[c.status]||''):'';
+return !exclude.some(ex=>status.includes(ex));
+});
+if (dataRows.length===0) { setStatus('⚠ 수강생 데이터를 찾지 못했어요. 열 번호를 수동으로 확인해주세요.','err'); return; }
+const total=dataRows.length, absent=[], late=[], earlyLeave=[], outing=[], noExitQR=[], leaveList=[];
+dataRows.forEach(r => {
+const name=r[c.name]||'';
+const entryRaw=c.entry>=0?(r[c.entry]||''):'';
+const exitRaw=c.exit>=0?(r[c.exit]||''):'';
+const outStartRaw=c.outStart>=0?(r[c.outStart]||''):'';
+const outEndRaw=c.outEnd>=0?(r[c.outEnd]||''):'';
+const leaveStatusRaw=c.leaveStatus>=0?(r[c.leaveStatus]||''):'';
+if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
+const entryMin=parseTime(entryRaw), exitMin=parseTime(exitRaw);
+const outStartMin=parseTime(outStartRaw), outEndMin=parseTime(outEndRaw);
+if (entryMin===null && isEmpty(entryRaw)) { absent.push({name}); }
+else {
+if (entryMin!==null && entryMin>=lateMin) late.push({name,time:fmtTime(entryRaw)});
+if (exitMin===null && isEmpty(exitRaw)) noExitQR.push({name});
+if (exitMin!==null && exitMin<earlyMin) earlyLeave.push({name,time:fmtTime(exitRaw)});
+}
+if (outStartMin!==null) outing.push({name,startTime:fmtTime(outStartRaw),endTime:outEndMin!==null?fmtTime(outEndRaw):null});
+});
+const presentCount=total-leaveList.length-absent.length;
+const lateAbsentCount=absent.length+late.length;
+
+// 컨텍스트 저장 (saveMorningLeave에서 오후 보고 재생성용)
+window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult };
+
+let morning=`${courseLabel}${dateStr} 오전 출결 현황 공유\n• 출석: ${presentCount}명\n• 지각/미입실: ${lateAbsentCount}명`;
+if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
+morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  ◦ ${i}`;});
+
+// 오전에 이미 저장된 휴공가는 오후 추가 휴공가에서 제외
+const additionalLeave = morningLeaveNames.length > 0
+? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+: leaveList;
+let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${presentCount}명\n• 외출: ${outing.length}명`;
+if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+afternoon+=`\n• 추가 휴공가: ${additionalLeave.length}명`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  ◦ ${i}`;});
+
+const irregular=[];
+late.forEach(({name,time})=>irregular.push(`${name}(지각 ${time})`));
+outing.forEach(({name,startTime,endTime})=>irregular.push(`${name}(외출 ${startTime}~${endTime||'미복귀'})`));
+earlyLeave.forEach(({name,time})=>irregular.push(`${name}(조퇴 ${time})`));
+let final=`${courseLabel}${dateStr} 최종 확정 출결 공유\n• 출석: ${presentCount}명\n• 퇴실 QR 미촬영: ${noExitQR.length}명`;
+if(noExitQR.length>0)noExitQR.forEach(({name})=>{final+=`\n  ◦ ${name}`;});
+final+=`\n• 지각/외출/조퇴: ${irregular.length}명`;if(irregular.length>0)irregular.forEach(i=>{final+=`\n  ◦ ${i}`;});
+final+=`\n• 출석입력요청 검토 결과\n  ◦ 검토 대상: ${reviewCount}건\n  ◦ 검토 결과: ${reviewResult}`;
+
+window._lastLeaveList = [...leaveList];
+const mlInput = document.getElementById('morning-leave-input');
+if (mlInput) { mlInput.value = leaveList.map(item => item.split('(')[0]).join(', '); }
+reports={morning,afternoon,final};
+document.getElementById('report-card').style.display='flex';
+switchTab(activeTab);
+setStatus(`✅ 분석 완료 — 총 ${total}명 | 출석 ${presentCount}명 | 지각/미입실 ${lateAbsentCount}명 | 외출 ${outing.length}명 | 휴공가 ${leaveList.length}명`,'ok');
+document.getElementById('report-card').scrollIntoView({behavior:'smooth'});
 }
 
 function switchTab(tab) {
-  activeTab=tab;
-  document.querySelectorAll('.tab').forEach(t=>{
-    const labels={morning:'오전',afternoon:'오후',final:'최종'};
-    t.classList.toggle('active',t.textContent.includes(labels[tab]));
-  });
-  document.getElementById('report-text').textContent=reports[tab]||'';
+activeTab=tab;
+document.querySelectorAll('.tab').forEach(t=>{
+const labels={morning:'오전',afternoon:'오후',final:'최종'};
+t.classList.toggle('active',t.textContent.includes(labels[tab]));
+});
+document.getElementById('report-text').textContent=reports[tab]||'';
 }
 
 function saveMorningLeave() {
-  const mlInputEl = document.getElementById('morning-leave-input');
-  morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
-  const btn = document.getElementById('save-morning-btn');
-  if (btn) { btn.classList.add('saved'); btn.textContent = '저장됨 ✓'; }
-  const el = document.getElementById('save-morning-done');
-  if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
+const mlInputEl = document.getElementById('morning-leave-input');
+morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
+
+// 오후 보고 즉시 갱신
+const ctx = window._analyzeContext;
+if (ctx) {
+const addLeave = morningLeaveNames.length > 0
+? ctx.leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+: ctx.leaveList;
+let aft = `${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${ctx.presentCount}명\n• 외출: ${ctx.outing.length}명`;
+if(ctx.outing.length>0) ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
+reports.afternoon = aft;
+if (activeTab === 'afternoon') document.getElementById('report-text').textContent = aft;
+}
+
+// 버튼은 텍스트 유지, 색상만 변경 / 옆에 "저장됨 ✓" 표시
+const btn = document.getElementById('save-morning-btn');
+if (btn) btn.classList.add('saved');
+const el = document.getElementById('save-morning-done');
+if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
 }
 
 function textToHtml(text) {
-  return text.split('\n').map((line,i)=>{
-    const ind=line.startsWith('  ');
-    const esc=line.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    if(i===0)return`<b>${esc}</b>`;
-    if(ind)return`&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
-    return esc;
-  }).join('<br>');
+return text.split('\n').map((line,i)=>{
+const ind=line.startsWith('  ');
+const esc=line.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+if(i===0)return`<b>${esc}</b>`;
+if(ind)return`&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
+return esc;
+}).join('<br>');
 }
 
 function copyReport() {
-  const text=reports[activeTab]; if(!text)return;
-  const div=document.createElement('div');
-  div.setAttribute('contenteditable','true');
-  div.innerHTML=textToHtml(text);
-  div.style.cssText='position:fixed;opacity:0;left:-9999px;';
-  document.body.appendChild(div);
-  const sel=window.getSelection(),rng=document.createRange();
-  rng.selectNodeContents(div);sel.removeAllRanges();sel.addRange(rng);
-  document.execCommand('copy');
-  document.body.removeChild(div);sel.removeAllRanges();
-  const el=document.getElementById('copy-done');
-  el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);
+const text=reports[activeTab]; if(!text)return;
+const div=document.createElement('div');
+div.setAttribute('contenteditable','true');
+div.innerHTML=textToHtml(text);
+div.style.cssText='position:fixed;opacity:0;left:-9999px;';
+document.body.appendChild(div);
+const sel=window.getSelection(),rng=document.createRange();
+rng.selectNodeContents(div);sel.removeAllRanges();sel.addRange(rng);
+document.execCommand('copy');
+document.body.removeChild(div);sel.removeAllRanges();
+const el=document.getElementById('copy-done');
+el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);
 }
 
 function toggleColMap() { document.getElementById('col-map').classList.toggle('show'); }
 
 function clearData() {
-  document.getElementById('paste-area').value='';
-  document.getElementById('file-input').value='';
-  document.getElementById('report-card').style.display='none';
-  setStatus('');
-  reports={morning:'',afternoon:'',final:''};
-  window._lastLeaveList=[];
-}
-function clearAll() {
-  clearData();
-  morningLeaveNames = [];
-  window._lastLeaveList = [];
-  const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
-  const mlB = document.getElementById('save-morning-btn'); if (mlB) { mlB.classList.remove('saved'); mlB.textContent = '오전 휴공가 저장'; }
-}
-
-function setStatus(msg,type) {
-  const el=document.getElementById('status-bar');
-  el.textContent=msg;
-  el.className='status-bar'+(type?' '+type:'');
-}
-
-document.getElementById('paste-area').addEventListener('input',()=>{
-  if(document.getElementById('paste-area').value.trim()) setStatus('데이터 감지됨. 분석하기를 눌러주세요.','');
-});
-</script>
-</body>
-</html>
+document.getElementById('paste-area').value='';
+document.getElementById('file-input').value='';
+document.getElementById('report-card').style.display='n
