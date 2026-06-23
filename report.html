@@ -619,8 +619,6 @@ function clearData() {
   setStatus('');
   reports={morning:'',afternoon:'',final:''};
   window._lastLeaveList=[];
-  const btn=document.getElementById('save-morning-btn');
-  if(btn){btn.classList.remove('saved');btn.textContent='오전 휴공가 저장';btn.style.display='none';}
 }
 function clearAll() {
   clearData();
