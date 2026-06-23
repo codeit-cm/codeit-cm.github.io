@@ -267,12 +267,21 @@ textarea:focus { border-color: #8b7cf8; }
       <label>조퇴 기준 <input type="time" id="early-leave-threshold" value="18:50" /></label>
     </div>
     <div class="divider"></div>
-    <div class="settings-row">
-      <label class="stack" style="gap:8px;">
-        출석입력요청 검토 결과
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+      <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
+        <span style="font-weight:600;font-size:13px;color:#555;">오전 보고 휴공가</span>
+        <span style="font-size:11px;color:#aaa;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="flex:1;min-width:120px;" />
+          <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
+          <span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
+        </div>
+      </div>
+      <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
+        <span style="font-weight:600;font-size:13px;color:#555;">출석입력요청 검토 결과</span>
         <label style="gap:6px;">검토 대상 <input type="number" id="review-count" value="0" style="width:55px;" min="0" /></label>
         <label style="gap:6px;">검토 결과 <input type="text" id="review-result" value="이상 없음" style="width:160px;" /></label>
-      </label>
+      </div>
     </div>
   </div>
 
@@ -317,17 +326,6 @@ textarea:focus { border-color: #8b7cf8; }
       <button class="btn btn-sm" onclick="copyReport()">복사하기</button>
       <span class="copy-done" id="copy-done">복사됨!</span>
       
-    </div>
-  </div>
-
-  <!-- ── 오전 보고 휴공가 카드 ── -->
-  <div class="card morning-leave-card" id="morning-leave-card" style="display:none;">
-    <div class="card-title">오전 보고 휴공가</div>
-    <div style="font-size:12px;color:#888;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-      <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" />
-      <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
-      <span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
     </div>
   </div>
 </div>
@@ -562,8 +560,6 @@ function analyze() {
   window._lastLeaveList = [...leaveList];
   const mlInput = document.getElementById('morning-leave-input');
   if (mlInput) { mlInput.value = leaveList.map(item => item.split('(')[0]).join(', '); }
-  const mlCard = document.getElementById('morning-leave-card');
-  if (mlCard) mlCard.style.display = 'flex';
   reports={morning,afternoon,final};
   document.getElementById('report-card').style.display='flex';
   switchTab(activeTab);
@@ -625,7 +621,6 @@ function clearData() {
   morningLeaveNames=[];
   window._lastLeaveList=[];
   const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
-  const mlC = document.getElementById('morning-leave-card'); if (mlC) mlC.style.display = 'none';
   const mlB = document.getElementById('save-morning-btn'); if (mlB) { mlB.classList.remove('saved'); mlB.textContent = '오전 휴공가 저장'; }
   const btn=document.getElementById('save-morning-btn');
   if(btn){btn.classList.remove('saved');btn.textContent='오전 휴공가 저장';btn.style.display='none';}
