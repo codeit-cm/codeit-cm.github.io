@@ -478,6 +478,7 @@ function renderTimeChips() {
 function selectTimeChip(i) {
   selectedChipIdx = i;
   document.getElementById('first-absence').value = timeChips[i].time;
+  document.getElementById('followup-time').value = '';
   renderTimeChips();
   renderFollowup();
 }
