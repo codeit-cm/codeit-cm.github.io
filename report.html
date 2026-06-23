@@ -271,8 +271,8 @@ textarea:focus { border-color: #8b7cf8; }
       <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
         <span style="font-weight:600;font-size:13px;color:#555;">오전 보고 휴공가</span>
         <span style="font-size:11px;color:#aaa;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</span>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="flex:1;min-width:120px;" />
+        <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="width:100%;" />
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
           <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
           <span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
         </div>
