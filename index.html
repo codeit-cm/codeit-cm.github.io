@@ -335,6 +335,7 @@ function pad(n) { return String(n).padStart(2, '0'); }
 ───────────────────────────────────────── */
 const _mgr = new URLSearchParams(location.search).get('manager') || '';
 const PROFILES_KEY = 'announce_profiles_v1' + (_mgr ? '_' + _mgr : '');
+const CHIPS_KEY = 'announce_chips_v1' + (_mgr ? '_' + _mgr : '');
 let activeIdx = -1;
 
 function getProfiles() {
@@ -363,6 +364,7 @@ function renderChips() {
 
 function switchProfile(i) {
   activeIdx = i;
+  try { localStorage.setItem(CHIPS_KEY + '_active', i); } catch {}
   const profiles = getProfiles();
   const key = profiles[i] ? profiles[i].label : null;
   timeChips = key && profileChips[key] ? [...profileChips[key]] : [];
@@ -444,7 +446,7 @@ function copyMsg() {
 ───────────────────────────────────────── */
 let timeChips = []; // [{ time: 'HH:MM' }]
 let selectedChipIdx = -1;
-let profileChips = {}; // { profileLabel: [{ time }] }
+let profileChips = (function() { try { return JSON.parse(localStorage.getItem(CHIPS_KEY) || '{}'); } catch { return {}; } })();
 
 function currentProfileLabel() {
   const profiles = getProfiles();
@@ -453,6 +455,7 @@ function currentProfileLabel() {
 
 function saveChipsForProfile() {
   profileChips[currentProfileLabel()] = [...timeChips];
+  try { localStorage.setItem(CHIPS_KEY, JSON.stringify(profileChips)); } catch {}
 }
 
 function addTimeChip(time) {
@@ -546,6 +549,20 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('add-form').classList.contains('show')) toggleAddForm();
 });
 
+(function restoreSession() {
+  try {
+    const saved = localStorage.getItem(CHIPS_KEY + '_active');
+    if (saved !== null) {
+      const i = parseInt(saved);
+      const profiles = getProfiles();
+      if (profiles[i]) {
+        activeIdx = i;
+        const key = profiles[i].label;
+        timeChips = profileChips[key] ? [...profileChips[key]] : [];
+      }
+    }
+  } catch {}
+})();
 renderChips();
 renderTimeChips();
 setNow();
