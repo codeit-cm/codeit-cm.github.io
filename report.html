@@ -120,6 +120,9 @@ textarea:focus { border-color: #8b7cf8; }
 .btn-save-morning:hover { background: #d0f0e0; }
 .btn-save-morning.saved { background: #1a7f4b; color: #fff; border-color: #1a7f4b; }
 .save-morning-done { font-size: 12px; color: #1a7f4b; opacity: 0; transition: opacity 0.3s; }
+.morning-leave-card { background: #f0faf5; border-color: #b2dfc8; }
+.morning-leave-input { flex: 1; min-width: 160px; font-size: 13px; padding: 6px 10px; border: 1px solid #b2dfc8; border-radius: 6px; background: #fff; outline: none; color: #1a1a1a; }
+.morning-leave-input:focus { border-color: #1a7f4b; }
 .status-bar { font-size: 12px; color: #888; padding: 6px 0; }
 .status-bar.ok { color: #22a06b; }
 .status-bar.err { color: #e5534b; }
@@ -313,7 +316,17 @@ textarea:focus { border-color: #8b7cf8; }
     <div class="copy-row">
       <button class="btn btn-sm" onclick="copyReport()">복사하기</button>
       <span class="copy-done" id="copy-done">복사됨!</span>
-      <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()" style="display:none;">오전 휴공가 저장</button>
+      
+    </div>
+  </div>
+
+  <!-- ── 오전 보고 휴공가 카드 ── -->
+  <div class="card morning-leave-card" id="morning-leave-card" style="display:none;">
+    <div class="card-title">오전 보고 휴공가</div>
+    <div style="font-size:12px;color:#888;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" />
+      <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
       <span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
     </div>
   </div>
@@ -547,6 +560,10 @@ function analyze() {
   final+=`\n• 지각/외출/조퇴: ${irregular.length}명`;if(irregular.length>0)irregular.forEach(i=>{final+=`\n  ◦ ${i}`;});
   final+=`\n• 출석입력요청 검토 결과\n  ◦ 검토 대상: ${reviewCount}건\n  ◦ 검토 결과: ${reviewResult}`;
   window._lastLeaveList = [...leaveList];
+  const mlInput = document.getElementById('morning-leave-input');
+  if (mlInput) { mlInput.value = leaveList.map(item => item.split('(')[0]).join(', '); }
+  const mlCard = document.getElementById('morning-leave-card');
+  if (mlCard) mlCard.style.display = 'flex';
   reports={morning,afternoon,final};
   document.getElementById('report-card').style.display='flex';
   switchTab(activeTab);
@@ -561,17 +578,15 @@ function switchTab(tab) {
     t.classList.toggle('active',t.textContent.includes(labels[tab]));
   });
   document.getElementById('report-text').textContent=reports[tab]||'';
-  const saveBtn=document.getElementById('save-morning-btn');
-  if(saveBtn) saveBtn.style.display=(tab==='morning'&&reports.morning)?'inline-flex':'none';
 }
 
 function saveMorningLeave() {
-  if(!reports.morning) return;
-  morningLeaveNames=(window._lastLeaveList||[]).map(item=>item.split('(')[0]);
-  const btn=document.getElementById('save-morning-btn');
-  btn.classList.add('saved'); btn.textContent='저장됨 ✓';
-  const el=document.getElementById('save-morning-done');
-  el.style.opacity='1'; setTimeout(()=>el.style.opacity='0',1800);
+  const mlInputEl = document.getElementById('morning-leave-input');
+  morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
+  const btn = document.getElementById('save-morning-btn');
+  if (btn) { btn.classList.add('saved'); btn.textContent = '저장됨 ✓'; }
+  const el = document.getElementById('save-morning-done');
+  if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
 }
 
 function textToHtml(text) {
@@ -609,6 +624,9 @@ function clearData() {
   reports={morning:'',afternoon:'',final:''};
   morningLeaveNames=[];
   window._lastLeaveList=[];
+  const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
+  const mlC = document.getElementById('morning-leave-card'); if (mlC) mlC.style.display = 'none';
+  const mlB = document.getElementById('save-morning-btn'); if (mlB) { mlB.classList.remove('saved'); mlB.textContent = '오전 휴공가 저장'; }
   const btn=document.getElementById('save-morning-btn');
   if(btn){btn.classList.remove('saved');btn.textContent='오전 휴공가 저장';btn.style.display='none';}
 }
