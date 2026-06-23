@@ -618,14 +618,17 @@ function clearData() {
   document.getElementById('report-card').style.display='none';
   setStatus('');
   reports={morning:'',afternoon:'',final:''};
-  morningLeaveNames=[];
   window._lastLeaveList=[];
-  const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
-  const mlB = document.getElementById('save-morning-btn'); if (mlB) { mlB.classList.remove('saved'); mlB.textContent = '오전 휴공가 저장'; }
   const btn=document.getElementById('save-morning-btn');
   if(btn){btn.classList.remove('saved');btn.textContent='오전 휴공가 저장';btn.style.display='none';}
 }
-function clearAll() { clearData(); }
+function clearAll() {
+  clearData();
+  morningLeaveNames = [];
+  window._lastLeaveList = [];
+  const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
+  const mlB = document.getElementById('save-morning-btn'); if (mlB) { mlB.classList.remove('saved'); mlB.textContent = '오전 휴공가 저장'; }
+}
 
 function setStatus(msg,type) {
   const el=document.getElementById('status-bar');
