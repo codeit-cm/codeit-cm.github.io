@@ -256,9 +256,9 @@ textarea:focus { border-color: #8b7cf8; }
   <!-- 기준 설정 -->
   <div class="card">
     <div class="card-title">기준 설정</div>
+    <input type="hidden" id="course-name" />
+    <input type="hidden" id="course-gen" />
     <div class="settings-row">
-      <label>과정명 <input type="text" id="course-name" placeholder="예) DA" style="width:100px;" /></label>
-      <label>기수 <input type="number" id="course-gen" placeholder="13" style="width:60px;" min="1" /> 기</label>
       <label>날짜 <input type="date" id="report-date" /></label>
       <label>지각 기준 <input type="time" id="late-threshold" value="09:11" /></label>
       <label>조퇴 기준 <input type="time" id="early-leave-threshold" value="18:50" /></label>
