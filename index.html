@@ -360,7 +360,17 @@ function renderChips() {
   }
 }
 
-function switchProfile(i) { activeIdx = i; renderChips(); }
+function switchProfile(i) {
+  activeIdx = i;
+  const profiles = getProfiles();
+  const key = profiles[i] ? profiles[i].label : null;
+  timeChips = key && profileChips[key] ? [...profileChips[key]] : [];
+  selectedChipIdx = -1;
+  document.getElementById('first-absence').value = '';
+  renderFollowup();
+  renderChips();
+  renderTimeChips();
+}
 
 function deleteProfile(i) {
   const p = getProfiles(); p.splice(i, 1); saveProfiles(p);
@@ -433,10 +443,21 @@ function copyMsg() {
 ───────────────────────────────────────── */
 let timeChips = []; // [{ time: 'HH:MM' }]
 let selectedChipIdx = -1;
+let profileChips = {}; // { profileLabel: [{ time }] }
+
+function currentProfileLabel() {
+  const profiles = getProfiles();
+  return activeIdx >= 0 && profiles[activeIdx] ? profiles[activeIdx].label : '__none__';
+}
+
+function saveChipsForProfile() {
+  profileChips[currentProfileLabel()] = [...timeChips];
+}
 
 function addTimeChip(time) {
   if (timeChips.find(c => c.time === time)) return; // 중복 방지
   timeChips.push({ time });
+  saveChipsForProfile();
   renderTimeChips();
 }
 
@@ -465,6 +486,7 @@ function removeTimeChip(i) {
   timeChips.splice(i, 1);
   if (selectedChipIdx === i) { selectedChipIdx = -1; document.getElementById('first-absence').value = ''; renderFollowup(); }
   else if (selectedChipIdx > i) selectedChipIdx--;
+  saveChipsForProfile();
   renderTimeChips();
 }
 
