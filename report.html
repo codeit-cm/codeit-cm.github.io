@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>출결 보고 생성기</title>
+<title>ì¶ê²° ë³´ê³  ìì±ê¸°</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -151,7 +151,7 @@ background: #fff;
 outline: none;
 }
 
-/* ── 과정 스위처 ── */
+/* ââ ê³¼ì  ì¤ìì² ââ */
 .switcher-bar {
 display: flex;
 align-items: center;
@@ -208,7 +208,7 @@ white-space: nowrap;
 }
 .add-chip-btn:hover { border-color: #8b7cf8; color: #6c4ef2; }
 
-/* ── 추가 폼 (인라인) ── */
+/* ââ ì¶ê° í¼ (ì¸ë¼ì¸) ââ */
 .add-form {
 display: none;
 align-items: center;
@@ -239,423 +239,422 @@ outline: none;
 
 <h1>
 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-출결 보고 생성기
+ì¶ê²° ë³´ê³  ìì±ê¸°
 </h1>
 
-<!-- ── 과정 스위처 ── -->
+<!-- ââ ê³¼ì  ì¤ìì² ââ -->
 <div class="switcher-bar" id="switcher-bar">
-<span class="switcher-label">과정 · 기수</span>
+<span class="switcher-label">ê³¼ì  Â· ê¸°ì</span>
 <div id="chip-list" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
-<button class="add-chip-btn" id="add-chip-btn" onclick="toggleAddForm()">＋ 추가</button>
+<button class="add-chip-btn" id="add-chip-btn" onclick="toggleAddForm()">ï¼ ì¶ê°</button>
 <div class="add-form" id="add-form">
-<input type="text" class="course-in" id="new-course" placeholder="예) DA" />
+<input type="text" class="course-in" id="new-course" placeholder="ì) DA" />
 <input type="number" class="cohort-in" id="new-cohort" placeholder="15" min="1" />
-<span style="font-size:13px;color:#555;">기</span>
-<button class="btn btn-sm btn-purple" onclick="addProfile()">저장</button>
-<button class="btn btn-sm" onclick="toggleAddForm()">취소</button>
+<span style="font-size:13px;color:#555;">ê¸°</span>
+<button class="btn btn-sm btn-purple" onclick="addProfile()">ì ì¥</button>
+<button class="btn btn-sm" onclick="toggleAddForm()">ì·¨ì</button>
 </div>
 </div>
 
-<!-- 기준 설정 -->
+<!-- ê¸°ì¤ ì¤ì  -->
 <div class="card">
-<div class="card-title">기준 설정</div>
+<div class="card-title">ê¸°ì¤ ì¤ì </div>
 <input type="hidden" id="course-name" />
 <input type="hidden" id="course-gen" />
 <div class="settings-row">
-<label>날짜 <input type="date" id="report-date" /></label>
-<label>지각 기준 <input type="time" id="late-threshold" value="09:11" /></label>
-<label>조퇴 기준 <input type="time" id="early-leave-threshold" value="18:50" /></label>
+<label>ë ì§ <input type="date" id="report-date" /></label>
+<label>ì§ê° ê¸°ì¤ <input type="time" id="late-threshold" value="09:11" /></label>
+<label>ì¡°í´ ê¸°ì¤ <input type="time" id="early-leave-threshold" value="18:50" /></label>
 </div>
 <div class="divider"></div>
 <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
 <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
-<span style="font-weight:600;font-size:13px;color:#555;">오전 보고 휴공가</span>
-<span style="font-size:11px;color:#aaa;margin-top:-4px;">(오전 분석 후 저장 버튼 클릭)</span>
-<input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="width:100%;" />
+<span style="font-weight:600;font-size:13px;color:#555;">ì¤ì  ë³´ê³  í´ê³µê°</span>
+<span style="font-size:11px;color:#aaa;margin-top:-4px;">(ì¤ì  ë¶ì í ì ì¥ ë²í¼ í´ë¦­)</span>
+<input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="ìë ì ì¥ ëë ì§ì  ìë ¥" style="width:100%;" />
 <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-<button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
-<span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
+<button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">ì¤ì  í´ê³µê° ì ì¥</button>
+<span class="save-morning-done" id="save-morning-done">ì ì¥ë¨ â</span>
 </div>
 </div>
 <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
-<span style="font-weight:600;font-size:13px;color:#555;">출석입력요청 검토 결과</span>
-<label style="gap:6px;">검토 대상 <input type="number" id="review-count" value="0" style="width:55px;" min="0" /></label>
-<label style="gap:6px;">검토 결과 <input type="text" id="review-result" placeholder="예) 승인 3, 반려 1" style="flex:1;" /></label>
+<span style="font-weight:600;font-size:13px;color:#555;">ì¶ììë ¥ìì²­ ê²í  ê²°ê³¼</span>
+<label style="gap:6px;">ê²í  ëì <input type="number" id="review-count" value="0" style="width:55px;" min="0" /></label>
+<label style="gap:6px;">ê²í  ê²°ê³¼ <input type="text" id="review-result" value="ì´ì ìì" style="width:160px;" /></label>
 </div>
 </div>
 </div>
 
-<!-- 데이터 입력 -->
+<!-- ë°ì´í° ìë ¥ -->
 <div class="card">
-<div class="card-title">데이터 입력</div>
-<div class="upload-area" onclick="document.getElementById('file-input').click()" id="upload-area">
+<div class="card-title">ì¶ê²° ë°ì´í° ìë ¥</div>
+<label class="upload-area" for="file-input">
 <input type="file" id="file-input" accept=".xlsx,.xls" onchange="handleFile(event)" />
-<div class="upload-icon">📊</div>
-<div>엑셀 파일을 클릭하여 업로드</div>
-<div style="font-size:12px;color:#aaa;margin-top:4px;">.xlsx / .xls 지원</div>
+ð xlsx íì¼ í´ë¦­íì¬ ìë¡ë
+</label>
+<div style="text-align:center;font-size:12px;color:#aaa;">ëë</div>
+<textarea id="paste-area" placeholder="ìììì ì ì²´ ì í(Ctrl+A) â ë³µì¬(Ctrl+C) í ì¬ê¸°ì ë¶ì¬ë£ê¸° (Ctrl+V)"></textarea>
+<div id="col-map" class="col-map">
+<div style="font-weight:600;margin-bottom:4px;">ì´ ë²í¸ ìë ì¤ì  (0ë¶í° ìì)</div>
+<div class="col-map-row"><label>ì±ëª</label><input id="col-name" type="number" value="1" min="0" /></div>
+<div class="col-map-row"><label>íë ¨ìí</label><input id="col-status" type="number" value="5" min="0" /></div>
+<div class="col-map-row"><label>ì¶ê²°ìí</label><input id="col-attend" type="number" value="6" min="0" /></div>
+<div class="col-map-row"><label>ìì¤ìê°</label><input id="col-entry" type="number" value="7" min="0" /></div>
+<div class="col-map-row"><label>í´ì¤ìê°</label><input id="col-exit" type="number" value="8" min="0" /></div>
+<div class="col-map-row"><label>ì¸ì¶ìì</label><input id="col-out-start" type="number" value="9" min="0" /></div>
+<div class="col-map-row"><label>ì¸ì¶ë³µê·</label><input id="col-out-end" type="number" value="10" min="0" /></div>
+<div class="col-map-row"><label>í´ê³µê°ìí</label><input id="col-leave-status" type="number" value="12" min="0" /></div>
 </div>
-<div id="col-map-toggle" style="display:none;margin-top:12px;">
-<button class="btn btn-sm" onclick="toggleColMap()" style="font-size:12px;">⚙ 열 매핑 확인/수정</button>
+<div class="row">
+<button class="btn btn-purple" onclick="analyze()">ë¶ìíê¸°</button>
+<button class="btn btn-sm" onclick="toggleColMap()">ì´ ë²í¸ ìë ì¤ì </button>
+<button class="btn btn-sm" onclick="clearAll()">ì´ê¸°í</button>
 </div>
-<div class="col-map-panel" id="col-map-panel">
-<div class="col-map-title">열 매핑 설정 <span style="font-weight:400;font-size:11px;color:#aaa;">(0부터 시작하는 열 번호)</span></div>
-<div class="col-map-grid">
-<label>이름 열<input type="number" id="col-name" value="1" min="0"/></label>
-<label>입장 열<input type="number" id="col-enter" value="3" min="0"/></label>
-<label>퇴장 열<input type="number" id="col-exit" value="4" min="0"/></label>
+<div id="status-bar" class="status-bar"></div>
 </div>
-</div>
-<div class="data-status" id="data-status"></div>
-<div id="paste-wrap" style="display:none">
-<textarea id="paste-area" rows="6" placeholder="또는 여기에 텍스트 데이터 붙여넣기"></textarea>
-</div>
-<div class="btn-row">
-<button class="btn btn-purple" id="analyze-btn" onclick="analyze()">분석하기</button>
-<button class="btn" onclick="clearAll()">초기화</button>
-</div>
-<div class="status-bar" id="status-bar"></div>
-</div>
-<!-- 리포트 출력 -->
-<div class="card" id="report-card" style="display:none">
-<div class="tab-row">
-<button class="tab-btn active" id="tab-morning" onclick="switchTab('morning')">오전</button>
-<button class="tab-btn" id="tab-afternoon" onclick="switchTab('afternoon')">오후</button>
-<button class="tab-btn" id="tab-final" onclick="switchTab('final')">최종</button>
+
+<!-- ë³´ê³  ì¶ë ¥ -->
+<div class="card" id="report-card" style="display:none;">
+<div class="card-title">ë³´ê³  ë©í¸</div>
+<div class="report-tabs">
+<div class="tab active" onclick="switchTab('morning')">ì¤ì  ë³´ê³ </div>
+<div class="tab" onclick="switchTab('afternoon')">ì¤í ë³´ê³ </div>
+<div class="tab" onclick="switchTab('final')">ìµì¢ ë³´ê³ </div>
 </div>
 <div class="report-box" id="report-text"></div>
-<div class="btn-row" style="margin-top:12px;">
-<button class="btn btn-purple" onclick="copyReport()">복사</button>
+<div class="copy-row">
+<button class="btn btn-sm" onclick="copyReport()">ë³µì¬íê¸°</button>
+<span class="copy-done" id="copy-done">ë³µì¬ë¨!</span>
+</div>
 </div>
 </div>
 
 <script>
-const XLSX_CDN = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
-let xlsxReady = false;
-let xlsxPending = null;
-function loadXlsx(cb){
-  if(xlsxReady){cb();return;}
-  if(xlsxPending){xlsxPending.push(cb);return;}
-  xlsxPending=[cb];
-  const s=document.createElement('script');
-  s.src=XLSX_CDN;
-  s.onload=()=>{xlsxReady=true;xlsxPending.forEach(f=>f());xlsxPending=null;};
-  document.head.appendChild(s);
+const PROFILES_KEY = 'report_profiles_v2';
+let activeIdx = -1;
+
+function getProfiles() {
+try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '[]'); }
+catch { return []; }
+}
+function saveProfiles(arr) { localStorage.setItem(PROFILES_KEY, JSON.stringify(arr)); }
+
+function renderChips() {
+const profiles = getProfiles();
+const list = document.getElementById('chip-list');
+list.innerHTML = profiles.map((p, i) => `
+<button class="profile-chip ${i === activeIdx ? 'active' : ''}" onclick="switchProfile(${i})">
+${p.label}
+<span class="del-x" onclick="event.stopPropagation(); deleteProfile(${i})">â</span>
+</button>
+`).join('');
 }
 
-let profiles=[];
-let activeProfile=0;
-let activeTab='morning';
-let reports={morning:'',afternoon:'',final:''};
-let morningLeaveNames=[];
-
-function saveProfiles(){
-  try{localStorage.setItem('cm_profiles',JSON.stringify(profiles));}catch(e){}
-}
-function loadProfiles(){
-  try{
-    const d=localStorage.getItem('cm_profiles');
-    if(d)profiles=JSON.parse(d);
-  }catch(e){}
-}
-function renderChips(){
-  const wrap=document.getElementById('chips-wrap');
-  if(!wrap)return;
-  wrap.innerHTML='';
-  profiles.forEach((p,i)=>{
-    const chip=document.createElement('div');
-    chip.className='chip'+(i===activeProfile?' active':'');
-    chip.textContent=p.course+'\xa0'+p.cohort+'기';
-    chip.onclick=()=>{activeProfile=i;renderChips();
-      document.getElementById('course-name').value=p.course;
-      document.getElementById('course-gen').value=p.cohort;
-    };
-    const del=document.createElement('span');
-    del.className='chip-del';
-    del.textContent='×';
-    del.onclick=(e)=>{e.stopPropagation();profiles.splice(i,1);if(activeProfile>=profiles.length)activeProfile=Math.max(0,profiles.length-1);saveProfiles();renderChips();};
-    chip.appendChild(del);
-    wrap.appendChild(chip);
-  });
-  if(profiles[activeProfile]){
-    document.getElementById('course-name').value=profiles[activeProfile].course;
-    document.getElementById('course-gen').value=profiles[activeProfile].cohort;
-  }
-}
-function toggleAddForm(){
-  const f=document.getElementById('add-form');
-  f.style.display=f.style.display==='flex'?'none':'flex';
-}
-function addProfile(){
-  const c=(document.getElementById('new-course').value||'').trim();
-  const g=parseInt(document.getElementById('new-cohort').value)||0;
-  if(!c||!g){alert('과정명과 기수를 입력해주세요.');return;}
-  profiles.push({course:c,cohort:g});
-  activeProfile=profiles.length-1;
-  saveProfiles();renderChips();
-  document.getElementById('add-form').style.display='none';
-  document.getElementById('new-course').value='';
-  document.getElementById('new-cohort').value='';
-}
-function init(){
-  loadProfiles();
-  if(!profiles.length)profiles=[{course:'DA',cohort:15}];
-  renderChips();
-  const rd=document.getElementById('report-date');
-  if(rd)rd.valueAsDate=new Date();
-}
-window.addEventListener('DOMContentLoaded',init);
-
-function handleFile(e){
-  const file=e.target.files[0];
-  if(!file)return;
-  loadXlsx(()=>{
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      try{
-        const wb=XLSX.read(ev.target.result,{type:'array'});
-        const ws=wb.Sheets[wb.SheetNames[0]];
-        const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-        window._rawRows=raw;
-        const detected=autoDetectCols(raw);
-        document.getElementById('col-name').value=detected.name;
-        document.getElementById('col-enter').value=detected.enter;
-        document.getElementById('col-exit').value=detected.exit;
-        document.getElementById('col-map-toggle').style.display='block';
-        const ds=document.getElementById('data-status');
-        ds.textContent='✅ '+file.name+' 로드 완료 ('+( raw.length-1)+'행)';
-        ds.style.color='#4caf50';
-        setStatus('파일 로드 완료. 분석하기를 눌러주세요.','info');
-      }catch(err){
-        setStatus('파일 읽기 오류: '+err.message,'error');
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  });
+function switchProfile(i) {
+const profiles = getProfiles();
+const p = profiles[i];
+if (!p) return;
+activeIdx = i;
+document.getElementById('course-name').value = p.course || '';
+document.getElementById('course-gen').value = p.cohort || '';
+if (p.late) document.getElementById('late-threshold').value = p.late;
+if (p.early) document.getElementById('early-leave-threshold').value = p.early;
+document.title = `ì¶ê²° ë³´ê³  Â· ${p.label}`;
+clearData();
+renderChips();
 }
 
-function parseRows(){
-  if(window._rawRows){
-    const colName=parseInt(document.getElementById('col-name').value)||1;
-    const colEnter=parseInt(document.getElementById('col-enter').value)||3;
-    const colExit=parseInt(document.getElementById('col-exit').value)||4;
-    return window._rawRows.slice(1).map(r=>({
-      name:String(r[colName]||'').trim(),
-      enter:String(r[colEnter]||'').trim(),
-      exit:String(r[colExit]||'').trim()
-    })).filter(r=>r.name);
-  }
-  const txt=document.getElementById('paste-area').value.trim();
-  if(!txt)return[];
-  return txt.split('\n').map(l=>{
-    const p=l.split(/\t|,/);
-    return{name:(p[1]||'').trim(),enter:(p[3]||'').trim(),exit:(p[4]||'').trim()};
-  }).filter(r=>r.name);
+function deleteProfile(i) {
+const profiles = getProfiles();
+profiles.splice(i, 1);
+saveProfiles(profiles);
+if (activeIdx === i) activeIdx = -1;
+else if (activeIdx > i) activeIdx--;
+renderChips();
 }
 
-function autoDetectCols(rows){
-  const hdr=(rows[0]||[]).map(c=>String(c).toLowerCase());
-  let name=1,enter=3,exit=4;
-  hdr.forEach((cell,i)=>{
-    if(/이름|성명|name/.test(cell))name=i;
-    else if(/입장|입실|접속|enter|login/.test(cell))enter=i;
-    else if(/퇴장|퇴실|exit|logout/.test(cell))exit=i;
-  });
-  return{name,enter,exit};
+function toggleAddForm() {
+const form = document.getElementById('add-form');
+form.classList.toggle('show');
+if (form.classList.contains('show')) {
+document.getElementById('new-course').focus();
+} else {
+document.getElementById('new-course').value = '';
+document.getElementById('new-cohort').value = '';
+}
 }
 
-function parseTime(s){
-  if(!s)return null;
-  const m=s.match(/(\d{1,2}):(\d{2})/);
-  if(!m)return null;
-  return{h:parseInt(m[1]),m:parseInt(m[2]),str:m[0]};
+function addProfile() {
+const course = document.getElementById('new-course').value.trim();
+const cohort = document.getElementById('new-cohort').value.trim();
+if (!course && !cohort) return;
+const label = `${course}${cohort ? ` ${cohort}ê¸°` : ''}`.trim();
+const late = document.getElementById('late-threshold').value || '09:11';
+const early = document.getElementById('early-leave-threshold').value || '18:50';
+const profiles = getProfiles();
+if (profiles.find(p => p.label === label)) {
+const idx = profiles.findIndex(p => p.label === label);
+switchProfile(idx);
+} else {
+profiles.push({ label, course, cohort, late, early });
+saveProfiles(profiles);
+activeIdx = profiles.length - 1;
+switchProfile(activeIdx);
 }
-function timeToMin(t){return t?t.h*60+t.m:null;}
-function fmtTime(t){if(!t)return'';return String(t.h).padStart(2,'0')+':'+String(t.m).padStart(2,'0');}
-
-function analyze(){
-  const rows=parseRows();
-  if(!rows.length){setStatus('데이터가 없습니다. 파일을 업로드하거나 텍스트를 붙여넣어주세요.','error');return;}
-  const course=document.getElementById('course-name').value.trim();
-  const gen=document.getElementById('course-gen').value.trim();
-  if(!course||!gen){setStatus('과정명과 기수를 선택해주세요.','error');return;}
-  const dateEl=document.getElementById('report-date');
-  const dateVal=dateEl.value;
-  let dateStr='';
-  if(dateVal){
-    const d=new Date(dateVal);
-    const days=['일','월','화','수','목','금','토'];
-    dateStr=' '+( d.getMonth()+1)+'월'+(d.getDate())+'일('+days[d.getDay()]+')';
-  }
-  const lateThresh=document.getElementById('late-threshold').value||'09:11';
-  const earlyThresh=document.getElementById('early-leave-threshold').value||'18:50';
-  const [lh,lm]=lateThresh.split(':').map(Number);
-  const lateMin=lh*60+lm;
-  const [eh,em]=earlyThresh.split(':').map(Number);
-  const earlyMin=timeToMin({h:eh,m:em});
-
-  let absentList=[],lateList=[],earlyLeaveList=[],outing=[],presentCount=0,leaveList=[];
-  const nameMap={};
-  rows.forEach(r=>{
-    if(!r.name)return;
-    if(!nameMap[r.name])nameMap[r.name]={enters:[],exits:[]};
-    const en=parseTime(r.enter);
-    const ex=parseTime(r.exit);
-    if(en)nameMap[r.name].enters.push(en);
-    if(ex)nameMap[r.name].exits.push(ex);
-  });
-  Object.entries(nameMap).forEach(([name,{enters,exits}])=>{
-    if(!enters.length){absentList.push(name);return;}
-    presentCount++;
-    enters.sort((a,b)=>timeToMin(a)-timeToMin(b));
-    exits.sort((a,b)=>timeToMin(a)-timeToMin(b));
-    const firstEn=enters[0];
-    const lastEx=exits[exits.length-1];
-    if(timeToMin(firstEn)>lateMin)lateList.push({name,time:fmtTime(firstEn)});
-    let outStartMin=null,outStartStr=null;
-    for(let i=0;i<exits.length;i++){
-      const exMin=timeToMin(exits[i]);
-      const nextEnMin=enters[i+1]?timeToMin(enters[i+1]):null;
-      if(nextEnMin!==null&&nextEnMin-exMin>=1){
-        outStartMin=exMin;outStartStr=fmtTime(exits[i]);
-      }
-    }
-    if(outStartMin!==null)outing.push({name,startTime:outStartStr,endTime:lastEx?fmtTime(lastEx):null});
-    const lastExMin=timeToMin(lastEx);
-    if(lastExMin!==null&&lastExMin<earlyMin){
-      const isOut=outing.some(o=>o.name===name);
-      if(!isOut)earlyLeaveList.push({name,time:fmtTime(lastEx)});
-    }
-  });
-  const reviewCount=parseInt(document.getElementById('review-count').value)||0;
-  const reviewResult=document.getElementById('review-result').value.trim();
-  const courseLabel='['+course+' '+gen+'기] ';
-  const totalCount=Object.keys(nameMap).length;
-  leaveList=[...absentList.map(n=>n+'(결석)')];
-  lateList.forEach(({name,time})=>leaveList.push(name+'(지각 '+time+')'));
-  earlyLeaveList.forEach(({name,time})=>leaveList.push(name+'(조퇴 '+time+')'));
-  window._lastLeaveList=[...leaveList];
-
-  window._analyzeContext={
-    leaveList:[...leaveList],
-    outing:[...outing],
-    presentCount,
-    courseLabel,
-    dateStr,
-    reviewCount,
-    reviewResult
-  };
-
-  const mlInput=document.getElementById('morning-leave-input');
-  if(mlInput&&!mlInput.value){
-    mlInput.value=leaveList.map(item=>item.split('(')[0]).join(', ');
-  }
-
-  let morning=courseLabel+dateStr+' 오전 출결 현황 공유\n';
-  morning+='• ZEP 접속자: '+presentCount+'명\n';
-  morning+='• 지각: '+lateList.length+'명';
-  if(lateList.length>0)lateList.forEach(({name,time})=>{morning+='\n  ◦ '+name+': '+time+' 접속';});
-  morning+='\n• 외출: '+outing.length+'명';
-  if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{morning+='\n  ◦ '+name+': '+startTime+'~'+(endTime||'미복귀')+' 외출';});
-  morning+='\n• 휴공가: '+leaveList.length+'명';
-  if(leaveList.length>0)leaveList.forEach(i=>{morning+='\n  ◦ '+i;});
-  if(reviewCount>0){morning+='\n• 출석입력요청 검토: '+reviewCount+'건';if(reviewResult)morning+=' ('+reviewResult+')';}
-  reports.morning=morning;
-
-  const addLeave=morningLeaveNames.length>0
-    ?leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
-    :leaveList;
-  let aft=courseLabel+dateStr+' 오후 출결 현황 공유\n';
-  aft+='• ZEP 접속자: '+presentCount+'명\n';
-  aft+='• 외출: '+outing.length+'명';
-  if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{aft+='\n  ◦ '+name+': '+startTime+'~'+(endTime||'미복귀')+' 외출';});
-  aft+='\n• 추가 휴공가: '+addLeave.length+'명';if(addLeave.length>0)addLeave.forEach(i=>{aft+='\n  ◦ '+i;});
-  reports.afternoon=aft;
-
-  let fin=courseLabel+dateStr+' 출결 현황 공유\n';
-  fin+='• 출석: '+presentCount+'/'+totalCount+'명\n';
-  fin+='• 지각/외출/조퇴: '+(lateList.length+outing.length+earlyLeaveList.length)+'명\n';
-  fin+='• 휴공가: '+leaveList.length+'명';
-  if(leaveList.length>0)leaveList.forEach(i=>{fin+='\n  ◦ '+i;});
-  if(reviewCount>0){fin+='\n• 출석입력요청 검토: '+reviewCount+'건';if(reviewResult)fin+=' ('+reviewResult+')';}
-  reports.final=fin;
-
-  document.getElementById('report-card').style.display='block';
-  switchTab('morning');
-  setStatus('분석 완료!','success');
+toggleAddForm();
 }
 
-function switchTab(tab){
-  activeTab=tab;
-  ['morning','afternoon','final'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
-  });
-  document.getElementById('report-text').textContent=reports[tab]||'';
+document.addEventListener('keydown', e => {
+if (e.key === 'Enter' && document.getElementById('add-form').classList.contains('show')) addProfile();
+});
+
+(function init() {
+const now = new Date();
+document.getElementById('report-date').value =
+`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+const p = new URLSearchParams(location.search);
+if (p.get('course') || p.get('cohort')) {
+document.getElementById('course-name').value = p.get('course') || '';
+document.getElementById('course-gen').value = p.get('cohort') || '';
+if (p.get('late')) document.getElementById('late-threshold').value = p.get('late');
+if (p.get('early')) document.getElementById('early-leave-threshold').value = p.get('early');
+}
+renderChips();
+if (getProfiles().length === 0) toggleAddForm();
+})();
+
+let reports = { morning:'', afternoon:'', final:'' };
+let activeTab = 'morning';
+let morningLeaveNames = [];
+
+function handleFile(e) {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = ev => {
+const wb = XLSX.read(ev.target.result, { type: 'array' });
+const ws = wb.Sheets[wb.SheetNames[0]];
+const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
+document.getElementById('paste-area').value = raw;
+setStatus('íì¼ ë¡ë ìë£. ë¶ìíê¸°ë¥¼ ëë¬ì£¼ì¸ì.', 'ok');
+};
+reader.readAsArrayBuffer(file);
 }
 
-function saveMorningLeave(){
-  const mlInputEl=document.getElementById('morning-leave-input');
-  morningLeaveNames=(mlInputEl?mlInputEl.value:'').split(',').map(s=>s.trim()).filter(Boolean);
-  const ctx=window._analyzeContext;
-  if(ctx){
-    const addLeave=morningLeaveNames.length>0
-      ?ctx.leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
-      :ctx.leaveList;
-    let aft=ctx.courseLabel+ctx.dateStr+' 오후 출결 현황 공유\n';
-    aft+='• ZEP 접속자: '+ctx.presentCount+'명\n';
-    aft+='• 외출: '+ctx.outing.length+'명';
-    if(ctx.outing.length>0)ctx.outing.forEach(({name,startTime,endTime})=>{aft+='\n  ◦ '+name+': '+startTime+'~'+(endTime||'미복귀')+' 외출';});
-    aft+='\n• 추가 휴공가: '+addLeave.length+'명';if(addLeave.length>0)addLeave.forEach(i=>{aft+='\n  ◦ '+i;});
-    reports.afternoon=aft;
-    if(activeTab==='afternoon')document.getElementById('report-text').textContent=aft;
-  }
-  const btn=document.getElementById('save-morning-btn');
-  if(btn)btn.classList.add('saved');
-  const el=document.getElementById('save-morning-done');
-  if(el){el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1800);}
+function parseRows(text) {
+return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
+}
+function isEmpty(v) { return !v || v === '-' || v === '' || v === 'null' || v === 'undefined'; }
+function autoDetectCols(rows) {
+const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
+rows.slice(0,3).forEach(row => {
+row.forEach((cell, i) => {
+const c = (cell||'').replace(/\s|\n/g,'');
+if (c==='ì±ëª' && map.name ===-1) map.name = i;
+if (c==='ìí' && map.status ===-1) map.status = i;
+if (c==='ì¶ê²°ìí' && map.attend ===-1) map.attend = i;
+if (c.includes('ìì¤') && map.entry ===-1) map.entry = i;
+if (c.includes('í´ì¤') && map.exit ===-1) map.exit = i;
+if (c.includes('ìì') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
+if (c.includes('ë³µê·') && map.outEnd ===-1) map.outEnd = i;
+});
+});
+return map;
+}
+function parseTime(s) {
+if (isEmpty(s)) return null;
+const m = s.match(/(\d{1,2}):(\d{2})/);
+return m ? parseInt(m[1])*60 + parseInt(m[2]) : null;
+}
+function timeToMin(hhmm) { const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
+function fmtTime(s) {
+if (isEmpty(s)) return '';
+const m = s.match(/(\d{1,2}:\d{2})/);
+return m ? m[1] : s;
 }
 
-function textToHtml(t){
-  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+function analyze() {
+const text = document.getElementById('paste-area').value.trim();
+if (!text) { setStatus('ë°ì´í°ë¥¼ ë¨¼ì  ìë ¥í´ì£¼ì¸ì.', 'err'); return; }
+const rows = parseRows(text);
+const detected = autoDetectCols(rows);
+const c = {
+name: detected.name >=0 ? detected.name : parseInt(document.getElementById('col-name').value),
+status: detected.status >=0 ? detected.status : parseInt(document.getElementById('col-status').value),
+attend: detected.attend >=0 ? detected.attend : parseInt(document.getElementById('col-attend').value),
+entry: detected.entry >=0 ? detected.entry : parseInt(document.getElementById('col-entry').value),
+exit: detected.exit >=0 ? detected.exit : parseInt(document.getElementById('col-exit').value),
+outStart: detected.outStart>=0 ? detected.outStart: parseInt(document.getElementById('col-out-start').value),
+outEnd: detected.outEnd >=0 ? detected.outEnd : parseInt(document.getElementById('col-out-end').value),
+leaveStatus: parseInt(document.getElementById('col-leave-status').value),
+};
+document.getElementById('col-name').value = c.name;
+document.getElementById('col-status').value = c.status;
+document.getElementById('col-attend').value = c.attend;
+document.getElementById('col-entry').value = c.entry;
+document.getElementById('col-exit').value = c.exit;
+document.getElementById('col-out-start').value = c.outStart;
+document.getElementById('col-out-end').value = c.outEnd;
+const lateMin = timeToMin(document.getElementById('late-threshold').value);
+const earlyMin = timeToMin(document.getElementById('early-leave-threshold').value);
+const course = document.getElementById('course-name').value.trim();
+const gen = document.getElementById('course-gen').value.trim();
+const dateVal = document.getElementById('report-date').value;
+const DAY = ['ì¼','ì','í','ì','ëª©','ê¸','í '];
+let rd;
+if (dateVal) { const [y,m,d]=dateVal.split('-').map(Number); rd=new Date(y,m-1,d); } else rd=new Date();
+const dateStr = `${rd.getMonth()+1}/${rd.getDate()}(${DAY[rd.getDay()]})`;
+const courseLabel = course ? `[${course}${gen?`_${gen}ê¸°`:''}] ` : '';
+const reviewCount = parseInt(document.getElementById('review-count').value)||0;
+const reviewResult = document.getElementById('review-result').value.trim()||'ì´ì ìì';
+const exclude = ['ì¤ëíë½','ì¡°ê¸°ì·¨ì','ìë£','íë ¨í¬ê¸°','ìì§í´ì'];
+const dataRows = rows.filter(r => {
+if (r.length<=c.name) return false;
+const name=r[c.name]||'';
+if (!name||name==='ì±ëª') return false;
+if (isNaN(parseInt(r[0]))) return false;
+const status=c.status>=0?(r[c.status]||''):'';
+return !exclude.some(ex=>status.includes(ex));
+});
+if (dataRows.length===0) { setStatus('â  ìê°ì ë°ì´í°ë¥¼ ì°¾ì§ ëª»íì´ì. ì´ ë²í¸ë¥¼ ìëì¼ë¡ íì¸í´ì£¼ì¸ì.','err'); return; }
+const total=dataRows.length, absent=[], late=[], earlyLeave=[], outing=[], noExitQR=[], leaveList=[];
+dataRows.forEach(r => {
+const name=r[c.name]||'';
+const entryRaw=c.entry>=0?(r[c.entry]||''):'';
+const exitRaw=c.exit>=0?(r[c.exit]||''):'';
+const outStartRaw=c.outStart>=0?(r[c.outStart]||''):'';
+const outEndRaw=c.outEnd>=0?(r[c.outEnd]||''):'';
+const leaveStatusRaw=c.leaveStatus>=0?(r[c.leaveStatus]||''):'';
+if (['ê³µê°','í´ê°'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
+const entryMin=parseTime(entryRaw), exitMin=parseTime(exitRaw);
+const outStartMin=parseTime(outStartRaw), outEndMin=parseTime(outEndRaw);
+if (entryMin===null && isEmpty(entryRaw)) { absent.push({name}); }
+else {
+if (entryMin!==null && entryMin>=lateMin) late.push({name,time:fmtTime(entryRaw)});
+if (exitMin===null && isEmpty(exitRaw)) noExitQR.push({name});
+if (exitMin!==null && exitMin<earlyMin) earlyLeave.push({name,time:fmtTime(exitRaw)});
+}
+if (outStartMin!==null) outing.push({name,startTime:fmtTime(outStartRaw),endTime:outEndMin!==null?fmtTime(outEndRaw):null});
+});
+const presentCount=total-leaveList.length-absent.length;
+const lateAbsentCount=absent.length+late.length;
+
+// ì»¨íì¤í¸ ì ì¥ (saveMorningLeaveìì ì¤í ë³´ê³  ì¬ìì±ì©)
+window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult };
+
+let morning=`${courseLabel}${dateStr} ì¤ì  ì¶ê²° íí© ê³µì \nâ¢ ì¶ì: ${presentCount}ëª\nâ¢ ì§ê°/ë¯¸ìì¤: ${lateAbsentCount}ëª`;
+if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  â¦ ${name}(ì§ê° ${time})`;});absent.forEach(({name})=>{morning+=`\n  â¦ ${name}(ë¯¸ìì¤)`;});}
+morning+=`\nâ¢ í´ê³µê°: ${leaveList.length}ëª`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  â¦ ${i}`;});
+
+// ì¤ì ì ì´ë¯¸ ì ì¥ë í´ê³µê°ë ì¤í ì¶ê° í´ê³µê°ìì ì ì¸
+const additionalLeave = morningLeaveNames.length > 0
+? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+: leaveList;
+let afternoon=`${courseLabel}${dateStr} ì¤í ì¶ê²° íí© ê³µì \nâ¢ ZEP ì ìì: ${presentCount}ëª\nâ¢ ì¸ì¶: ${outing.length}ëª`;
+if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  â¦ ${name}: ${startTime}~${endTime||'ë¯¸ë³µê·'} ì¸ì¶`;});
+afternoon+=`\nâ¢ ì¶ê° í´ê³µê°: ${additionalLeave.length}ëª`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  â¦ ${i}`;});
+
+const irregular=[];
+late.forEach(({name,time})=>irregular.push(`${name}(ì§ê° ${time})`));
+outing.forEach(({name,startTime,endTime})=>irregular.push(`${name}(ì¸ì¶ ${startTime}~${endTime||'ë¯¸ë³µê·'})`));
+earlyLeave.forEach(({name,time})=>irregular.push(`${name}(ì¡°í´ ${time})`));
+let final=`${courseLabel}${dateStr} ìµì¢ íì  ì¶ê²° ê³µì \nâ¢ ì¶ì: ${presentCount}ëª\nâ¢ í´ì¤ QR ë¯¸ì´¬ì: ${noExitQR.length}ëª`;
+if(noExitQR.length>0)noExitQR.forEach(({name})=>{final+=`\n  â¦ ${name}`;});
+final+=`\nâ¢ ì§ê°/ì¸ì¶/ì¡°í´: ${irregular.length}ëª`;if(irregular.length>0)irregular.forEach(i=>{final+=`\n  â¦ ${i}`;});
+final+=`\nâ¢ ì¶ììë ¥ìì²­ ê²í  ê²°ê³¼\n  â¦ ê²í  ëì: ${reviewCount}ê±´\n  â¦ ê²í  ê²°ê³¼: ${reviewResult}`;
+
+window._lastLeaveList = [...leaveList];
+const mlInput = document.getElementById('morning-leave-input');
+if (mlInput) { mlInput.value = leaveList.map(item => item.split('(')[0]).join(', '); }
+reports={morning,afternoon,final};
+document.getElementById('report-card').style.display='flex';
+switchTab(activeTab);
+setStatus(`â ë¶ì ìë£ â ì´ ${total}ëª | ì¶ì ${presentCount}ëª | ì§ê°/ë¯¸ìì¤ ${lateAbsentCount}ëª | ì¸ì¶ ${outing.length}ëª | í´ê³µê° ${leaveList.length}ëª`,'ok');
+document.getElementById('report-card').scrollIntoView({behavior:'smooth'});
 }
 
-function copyReport(){
-  const txt=reports[activeTab]||'';
-  if(!txt)return;
-  navigator.clipboard.writeText(txt).then(()=>setStatus('복사됨!','success')).catch(()=>{
-    const ta=document.createElement('textarea');
-    ta.value=txt;document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-    setStatus('복사됨!','success');
-  });
+function switchTab(tab) {
+activeTab=tab;
+document.querySelectorAll('.tab').forEach(t=>{
+const labels={morning:'ì¤ì ',afternoon:'ì¤í',final:'ìµì¢'};
+t.classList.toggle('active',t.textContent.includes(labels[tab]));
+});
+document.getElementById('report-text').textContent=reports[tab]||'';
 }
 
-function toggleColMap(){
-  const p=document.getElementById('col-map-panel');
-  p.style.display=p.style.display==='block'?'none':'block';
+function saveMorningLeave() {
+const mlInputEl = document.getElementById('morning-leave-input');
+morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
+
+// ì¤í ë³´ê³  ì¦ì ê°±ì 
+const ctx = window._analyzeContext;
+if (ctx) {
+const addLeave = morningLeaveNames.length > 0
+? ctx.leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+: ctx.leaveList;
+let aft = `${ctx.courseLabel}${ctx.dateStr} ì¤í ì¶ê²° íí© ê³µì \nâ¢ ZEP ì ìì: ${ctx.presentCount}ëª\nâ¢ ì¸ì¶: ${ctx.outing.length}ëª`;
+if(ctx.outing.length>0) ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  â¦ ${name}: ${startTime}~${endTime||'ë¯¸ë³µê·'} ì¸ì¶`;});
+aft+=`\nâ¢ ì¶ê° í´ê³µê°: ${addLeave.length}ëª`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  â¦ ${i}`;});
+reports.afternoon = aft;
+if (activeTab === 'afternoon') document.getElementById('report-text').textContent = aft;
 }
 
-function clearData(){
-  document.getElementById('paste-area').value='';
-  document.getElementById('file-input').value='';
-  document.getElementById('report-card').style.display='none';
+// ë²í¼ì íì¤í¸ ì ì§, ììë§ ë³ê²½ / ìì "ì ì¥ë¨ â" íì
+const btn = document.getElementById('save-morning-btn');
+if (btn) btn.classList.add('saved');
+const el = document.getElementById('save-morning-done');
+if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
+}
+
+function textToHtml(text) {
+return text.split('\n').map((line,i)=>{
+const ind=line.startsWith('  ');
+const esc=line.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+if(i===0)return`<b>${esc}</b>`;
+if(ind)return`&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
+return esc;
+}).join('<br>');
+}
+
+function copyReport() {
+const text=reports[activeTab]; if(!text)return;
+const div=document.createElement('div');
+div.setAttribute('contenteditable','true');
+div.innerHTML=textToHtml(text);
+div.style.cssText='position:fixed;opacity:0;left:-9999px;';
+document.body.appendChild(div);
+const sel=window.getSelection(),rng=document.createRange();
+rng.selectNodeContents(div);sel.removeAllRanges();sel.addRange(rng);
+document.execCommand('copy');
+document.body.removeChild(div);sel.removeAllRanges();
+const el=document.getElementById('copy-done');
+el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);
+}
+
+function toggleColMap() { document.getElementById('col-map').classList.toggle('show'); }
+
+function clearData() {
+document.getElementById('paste-area').value='';
+document.getElementById('file-input').value='';
+document.getElementById('report-card').style.display='none';
   setStatus('');
   reports={morning:'',afternoon:'',final:''};
   window._lastLeaveList=[];
 }
 
-function clearAll(){
+function clearAll() {
   clearData();
-  morningLeaveNames=[];
-  window._lastLeaveList=[];
-  window._analyzeContext=null;
-  const mlI=document.getElementById('morning-leave-input');if(mlI)mlI.value='';
-  const mlB=document.getElementById('save-morning-btn');if(mlB)mlB.classList.remove('saved');
+  morningLeaveNames = [];
+  window._lastLeaveList = [];
+  window._analyzeContext = null;
+  const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
+  const mlB = document.getElementById('save-morning-btn'); if (mlB) mlB.classList.remove('saved');
 }
 
-function setStatus(msg,type=''){
-  const el=document.getElementById('status-bar');
-  el.textContent=msg;
-  el.className='status-bar'+(type?' '+type:'');
+function setStatus(msg, type='') {
+  const el = document.getElementById('status-bar');
+  el.textContent = msg;
+  el.className = 'status-bar' + (type ? ' ' + type : '');
 }
 </script>
 </body>
