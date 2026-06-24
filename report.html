@@ -551,7 +551,7 @@ morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveLi
 const additionalLeave = morningLeaveNames.length > 0
 ? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
 : leaveList;
-let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${presentCount}명\n• 외출: ${outing.length}명`;
+let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${outing.length}명`;
 if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
 afternoon+=`\n• 추가 휴공가: ${additionalLeave.length}명`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  ◦ ${i}`;});
 
@@ -593,7 +593,7 @@ if (ctx) {
 const addLeave = morningLeaveNames.length > 0
 ? ctx.leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
 : ctx.leaveList;
-let aft = `${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${ctx.presentCount}명\n• 외출: ${ctx.outing.length}명`;
+let aft = `${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${ctx.outing.length}명`;
 if(ctx.outing.length>0) ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
 aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
 reports.afternoon = aft;
