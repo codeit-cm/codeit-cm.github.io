@@ -333,7 +333,7 @@ function pad(n) { return String(n).padStart(2, '0'); }
 /* ─────────────────────────────────────────
    과정 프로필 스위처
 ───────────────────────────────────────── */
-const _mgr = new URLSearchParams(location.search).get('manager') || '';
+const _mgr = new URLSearchParams(location.search).get('cm') || '';
 const PROFILES_KEY = 'announce_profiles_v1' + (_mgr ? '_' + _mgr : '');
 const CHIPS_KEY = 'announce_chips_v1' + (_mgr ? '_' + _mgr : '');
 let activeIdx = -1;
