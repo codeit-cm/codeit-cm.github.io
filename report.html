@@ -330,7 +330,8 @@ outline: none;
 </div>
 
 <script>
-const PROFILES_KEY = 'report_profiles_v2';
+const _managerParam = new URLSearchParams(location.search).get('manager') || '';
+const PROFILES_KEY = _managerParam ? `report_profiles_v2_${_managerParam}` : 'report_profiles_v2';
 let activeIdx = -1;
 
 function getProfiles() {
