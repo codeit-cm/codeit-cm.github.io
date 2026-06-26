@@ -150,7 +150,6 @@ text-align: center;
 background: #fff;
 outline: none;
 }
-
 /* ── 과정 스위처 ── */
 .switcher-bar {
 display: flex;
@@ -207,7 +206,6 @@ transition: all 0.12s;
 white-space: nowrap;
 }
 .add-chip-btn:hover { border-color: #8b7cf8; color: #6c4ef2; }
-
 /* ── 추가 폼 (인라인) ── */
 .add-form {
 display: none;
@@ -262,7 +260,7 @@ outline: none;
 <input type="hidden" id="course-name" />
 <input type="hidden" id="course-gen" />
 <div class="settings-row">
-<label>날짜 <input type="date" id="report-date" /></label>
+<label>날짜 <input type="date" id="report-date" onchange="loadMorningLeave()" /></label>
 <label>지각 기준 <input type="time" id="late-threshold" value="09:11" /></label>
 <label>조퇴 기준 <input type="time" id="early-leave-threshold" value="18:50" /></label>
 </div>
@@ -275,6 +273,7 @@ outline: none;
 <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
 <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
 <span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
+<button class="btn btn-sm" id="clear-morning-btn" onclick="clearMorningLeave()" style="font-size:11px;padding:4px 8px;color:#aaa;border-color:#e5e5e3;">초기화</button>
 </div>
 </div>
 <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
@@ -330,98 +329,130 @@ outline: none;
 </div>
 
 <script>
-const _managerParam = new URLSearchParams(location.search).get('cm') || '';
-const PROFILES_KEY = _managerParam ? `report_profiles_v2_${_managerParam}` : 'report_profiles_v2';
+const PROFILES_KEY = 'report_profiles_v2';
 let activeIdx = -1;
 
 function getProfiles() {
-try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '[]'); }
-catch { return []; }
+  try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '[]'); }
+  catch { return []; }
 }
 function saveProfiles(arr) { localStorage.setItem(PROFILES_KEY, JSON.stringify(arr)); }
 
 function renderChips() {
-const profiles = getProfiles();
-const list = document.getElementById('chip-list');
-list.innerHTML = profiles.map((p, i) => `
-<button class="profile-chip ${i === activeIdx ? 'active' : ''}" onclick="switchProfile(${i})">
-${p.label}
-<span class="del-x" onclick="event.stopPropagation(); deleteProfile(${i})">✕</span>
-</button>
-`).join('');
+  const profiles = getProfiles();
+  const list = document.getElementById('chip-list');
+  list.innerHTML = profiles.map((p, i) => `
+    <button class="profile-chip ${i === activeIdx ? 'active' : ''}" onclick="switchProfile(${i})">
+      ${p.label}
+      <span class="del-x" onclick="event.stopPropagation(); deleteProfile(${i})">✕</span>
+    </button>
+  `).join('');
+}
+
+function getMorningLeaveKey() {
+  const profiles = getProfiles();
+  const p = profiles[activeIdx];
+  const label = p ? p.label : '__default__';
+  const date = document.getElementById('report-date').value;
+  return `morning_leave_v2_${label}_${date}`;
+}
+
+function loadMorningLeave() {
+  const key = getMorningLeaveKey();
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem(key) || '[]'); } catch {}
+  morningLeaveNames = saved;
+  const mlInput = document.getElementById('morning-leave-input');
+  if (mlInput) mlInput.value = morningLeaveNames.join(', ');
+  const btn = document.getElementById('save-morning-btn');
+  if (btn) btn.classList.toggle('saved', morningLeaveNames.length > 0);
+  const el = document.getElementById('save-morning-done');
+  if (el) el.style.opacity = '0';
+}
+
+function clearMorningLeave() {
+  if (!confirm('오전 휴공가 저장 내역을 초기화할까요?')) return;
+  localStorage.removeItem(getMorningLeaveKey());
+  morningLeaveNames = [];
+  const mlInput = document.getElementById('morning-leave-input');
+  if (mlInput) mlInput.value = '';
+  const btn = document.getElementById('save-morning-btn');
+  if (btn) btn.classList.remove('saved');
 }
 
 function switchProfile(i) {
-const profiles = getProfiles();
-const p = profiles[i];
-if (!p) return;
-activeIdx = i;
-document.getElementById('course-name').value = p.course || '';
-document.getElementById('course-gen').value = p.cohort || '';
-if (p.late) document.getElementById('late-threshold').value = p.late;
-if (p.early) document.getElementById('early-leave-threshold').value = p.early;
-document.title = `출결 보고 · ${p.label}`;
-clearData();
-renderChips();
+  const profiles = getProfiles();
+  const p = profiles[i];
+  if (!p) return;
+  activeIdx = i;
+  document.getElementById('course-name').value = p.course || '';
+  document.getElementById('course-gen').value = p.cohort || '';
+  if (p.late) document.getElementById('late-threshold').value = p.late;
+  if (p.early) document.getElementById('early-leave-threshold').value = p.early;
+  document.title = `출결 보고 · ${p.label}`;
+  clearData();
+  loadMorningLeave();
+  renderChips();
 }
 
 function deleteProfile(i) {
-const profiles = getProfiles();
-profiles.splice(i, 1);
-saveProfiles(profiles);
-if (activeIdx === i) activeIdx = -1;
-else if (activeIdx > i) activeIdx--;
-renderChips();
+  const profiles = getProfiles();
+  profiles.splice(i, 1);
+  saveProfiles(profiles);
+  if (activeIdx === i) activeIdx = -1;
+  else if (activeIdx > i) activeIdx--;
+  renderChips();
 }
 
 function toggleAddForm() {
-const form = document.getElementById('add-form');
-form.classList.toggle('show');
-if (form.classList.contains('show')) {
-document.getElementById('new-course').focus();
-} else {
-document.getElementById('new-course').value = '';
-document.getElementById('new-cohort').value = '';
-}
+  const form = document.getElementById('add-form');
+  form.classList.toggle('show');
+  if (form.classList.contains('show')) {
+    document.getElementById('new-course').focus();
+  } else {
+    document.getElementById('new-course').value = '';
+    document.getElementById('new-cohort').value = '';
+  }
 }
 
 function addProfile() {
-const course = document.getElementById('new-course').value.trim();
-const cohort = document.getElementById('new-cohort').value.trim();
-if (!course && !cohort) return;
-const label = `${course}${cohort ? ` ${cohort}기` : ''}`.trim();
-const late = document.getElementById('late-threshold').value || '09:11';
-const early = document.getElementById('early-leave-threshold').value || '18:50';
-const profiles = getProfiles();
-if (profiles.find(p => p.label === label)) {
-const idx = profiles.findIndex(p => p.label === label);
-switchProfile(idx);
-} else {
-profiles.push({ label, course, cohort, late, early });
-saveProfiles(profiles);
-activeIdx = profiles.length - 1;
-switchProfile(activeIdx);
-}
-toggleAddForm();
+  const course = document.getElementById('new-course').value.trim();
+  const cohort = document.getElementById('new-cohort').value.trim();
+  if (!course && !cohort) return;
+  const label = `${course}${cohort ? ` ${cohort}기` : ''}`.trim();
+  const late = document.getElementById('late-threshold').value || '09:11';
+  const early = document.getElementById('early-leave-threshold').value || '18:50';
+  const profiles = getProfiles();
+  if (profiles.find(p => p.label === label)) {
+    const idx = profiles.findIndex(p => p.label === label);
+    switchProfile(idx);
+  } else {
+    profiles.push({ label, course, cohort, late, early });
+    saveProfiles(profiles);
+    activeIdx = profiles.length - 1;
+    switchProfile(activeIdx);
+  }
+  toggleAddForm();
 }
 
 document.addEventListener('keydown', e => {
-if (e.key === 'Enter' && document.getElementById('add-form').classList.contains('show')) addProfile();
+  if (e.key === 'Enter' && document.getElementById('add-form').classList.contains('show')) addProfile();
 });
 
 (function init() {
-const now = new Date();
-document.getElementById('report-date').value =
-`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-const p = new URLSearchParams(location.search);
-if (p.get('course') || p.get('cohort')) {
-document.getElementById('course-name').value = p.get('course') || '';
-document.getElementById('course-gen').value = p.get('cohort') || '';
-if (p.get('late')) document.getElementById('late-threshold').value = p.get('late');
-if (p.get('early')) document.getElementById('early-leave-threshold').value = p.get('early');
-}
-renderChips();
-if (getProfiles().length === 0) toggleAddForm();
+  const now = new Date();
+  document.getElementById('report-date').value =
+    `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const p = new URLSearchParams(location.search);
+  if (p.get('course') || p.get('cohort')) {
+    document.getElementById('course-name').value = p.get('course') || '';
+    document.getElementById('course-gen').value = p.get('cohort') || '';
+    if (p.get('late')) document.getElementById('late-threshold').value = p.get('late');
+    if (p.get('early')) document.getElementById('early-leave-threshold').value = p.get('early');
+  }
+  renderChips();
+  if (getProfiles().length === 0) toggleAddForm();
+  loadMorningLeave();
 })();
 
 let reports = { morning:'', afternoon:'', final:'' };
@@ -429,233 +460,232 @@ let activeTab = 'morning';
 let morningLeaveNames = [];
 
 function handleFile(e) {
-const file = e.target.files[0];
-if (!file) return;
-const reader = new FileReader();
-reader.onload = ev => {
-const wb = XLSX.read(ev.target.result, { type: 'array' });
-const ws = wb.Sheets[wb.SheetNames[0]];
-const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
-document.getElementById('paste-area').value = raw;
-setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
-};
-reader.readAsArrayBuffer(file);
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const wb = XLSX.read(ev.target.result, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
+    document.getElementById('paste-area').value = raw;
+    setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
+  };
+  reader.readAsArrayBuffer(file);
 }
 
 function parseRows(text) {
-return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
+  return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
 }
 function isEmpty(v) { return !v || v === '-' || v === '' || v === 'null' || v === 'undefined'; }
 function autoDetectCols(rows) {
-const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
-rows.slice(0,3).forEach(row => {
-row.forEach((cell, i) => {
-const c = (cell||'').replace(/\s|\n/g,'');
-if (c==='성명' && map.name ===-1) map.name = i;
-if (c==='상태' && map.status ===-1) map.status = i;
-if (c==='출결상태' && map.attend ===-1) map.attend = i;
-if (c.includes('입실') && map.entry ===-1) map.entry = i;
-if (c.includes('퇴실') && map.exit ===-1) map.exit = i;
-if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
-if (c.includes('복귀') && map.outEnd ===-1) map.outEnd = i;
-});
-});
-return map;
+  const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
+  rows.slice(0,3).forEach(row => {
+    row.forEach((cell, i) => {
+      const c = (cell||'').replace(/\s|\n/g,'');
+      if (c==='성명' && map.name ===-1) map.name = i;
+      if (c==='상태' && map.status ===-1) map.status = i;
+      if (c==='출결상태' && map.attend ===-1) map.attend = i;
+      if (c.includes('입실') && map.entry ===-1) map.entry = i;
+      if (c.includes('퇴실') && map.exit ===-1) map.exit = i;
+      if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
+      if (c.includes('복귀') && map.outEnd ===-1) map.outEnd = i;
+    });
+  });
+  return map;
 }
 function parseTime(s) {
-if (isEmpty(s)) return null;
-const m = s.match(/(\d{1,2}):(\d{2})/);
-return m ? parseInt(m[1])*60 + parseInt(m[2]) : null;
+  if (isEmpty(s)) return null;
+  const m = s.match(/(\d{1,2}):(\d{2})/);
+  return m ? parseInt(m[1])*60 + parseInt(m[2]) : null;
 }
 function timeToMin(hhmm) { const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
 function fmtTime(s) {
-if (isEmpty(s)) return '';
-const m = s.match(/(\d{1,2}:\d{2})/);
-return m ? m[1] : s;
+  if (isEmpty(s)) return '';
+  const m = s.match(/(\d{1,2}:\d{2})/);
+  return m ? m[1] : s;
 }
 
 function analyze() {
-const text = document.getElementById('paste-area').value.trim();
-if (!text) { setStatus('데이터를 먼저 입력해주세요.', 'err'); return; }
-const rows = parseRows(text);
-const detected = autoDetectCols(rows);
-const c = {
-name: detected.name >=0 ? detected.name : parseInt(document.getElementById('col-name').value),
-status: detected.status >=0 ? detected.status : parseInt(document.getElementById('col-status').value),
-attend: detected.attend >=0 ? detected.attend : parseInt(document.getElementById('col-attend').value),
-entry: detected.entry >=0 ? detected.entry : parseInt(document.getElementById('col-entry').value),
-exit: detected.exit >=0 ? detected.exit : parseInt(document.getElementById('col-exit').value),
-outStart: detected.outStart>=0 ? detected.outStart: parseInt(document.getElementById('col-out-start').value),
-outEnd: detected.outEnd >=0 ? detected.outEnd : parseInt(document.getElementById('col-out-end').value),
-leaveStatus: parseInt(document.getElementById('col-leave-status').value),
-};
-document.getElementById('col-name').value = c.name;
-document.getElementById('col-status').value = c.status;
-document.getElementById('col-attend').value = c.attend;
-document.getElementById('col-entry').value = c.entry;
-document.getElementById('col-exit').value = c.exit;
-document.getElementById('col-out-start').value = c.outStart;
-document.getElementById('col-out-end').value = c.outEnd;
-const lateMin = timeToMin(document.getElementById('late-threshold').value);
-const earlyMin = timeToMin(document.getElementById('early-leave-threshold').value);
-const course = document.getElementById('course-name').value.trim();
-const gen = document.getElementById('course-gen').value.trim();
-const dateVal = document.getElementById('report-date').value;
-const DAY = ['일','월','화','수','목','금','토'];
-let rd;
-if (dateVal) { const [y,m,d]=dateVal.split('-').map(Number); rd=new Date(y,m-1,d); } else rd=new Date();
-const dateStr = `${rd.getMonth()+1}/${rd.getDate()}(${DAY[rd.getDay()]})`;
-const courseLabel = course ? `[${course}${gen?`_${gen}기`:''}] ` : '';
-const reviewCount = parseInt(document.getElementById('review-count').value)||0;
-const reviewResult = document.getElementById('review-result').value.trim()||'이상 없음';
-const exclude = ['중도탈락','조기취업','수료','훈련포기','자진퇴소'];
-const dataRows = rows.filter(r => {
-if (r.length<=c.name) return false;
-const name=r[c.name]||'';
-if (!name||name==='성명') return false;
-if (isNaN(parseInt(r[0]))) return false;
-const status=c.status>=0?(r[c.status]||''):'';
-return !exclude.some(ex=>status.includes(ex));
-});
-if (dataRows.length===0) { setStatus('⚠ 수강생 데이터를 찾지 못했어요. 열 번호를 수동으로 확인해주세요.','err'); return; }
-const total=dataRows.length, absent=[], late=[], earlyLeave=[], outing=[], noExitQR=[], leaveList=[];
-dataRows.forEach(r => {
-const name=r[c.name]||'';
-const entryRaw=c.entry>=0?(r[c.entry]||''):'';
-const exitRaw=c.exit>=0?(r[c.exit]||''):'';
-const outStartRaw=c.outStart>=0?(r[c.outStart]||''):'';
-const outEndRaw=c.outEnd>=0?(r[c.outEnd]||''):'';
-const leaveStatusRaw=c.leaveStatus>=0?(r[c.leaveStatus]||''):'';
-if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
-const entryMin=parseTime(entryRaw), exitMin=parseTime(exitRaw);
-const outStartMin=parseTime(outStartRaw), outEndMin=parseTime(outEndRaw);
-if (entryMin===null && isEmpty(entryRaw)) { absent.push({name}); }
-else {
-if (entryMin!==null && entryMin>=lateMin) late.push({name,time:fmtTime(entryRaw)});
-if (exitMin===null && isEmpty(exitRaw)) noExitQR.push({name});
-if (exitMin!==null && exitMin<earlyMin) earlyLeave.push({name,time:fmtTime(exitRaw)});
-}
-if (outStartMin!==null) outing.push({name,startTime:fmtTime(outStartRaw),endTime:outEndMin!==null?fmtTime(outEndRaw):null});
-});
-const presentCount=total-leaveList.length-absent.length;
-const lateAbsentCount=absent.length+late.length;
+  const text = document.getElementById('paste-area').value.trim();
+  if (!text) { setStatus('데이터를 먼저 입력해주세요.', 'err'); return; }
+  const rows = parseRows(text);
+  const detected = autoDetectCols(rows);
+  const c = {
+    name:        detected.name    >=0 ? detected.name    : parseInt(document.getElementById('col-name').value),
+    status:      detected.status  >=0 ? detected.status  : parseInt(document.getElementById('col-status').value),
+    attend:      detected.attend  >=0 ? detected.attend  : parseInt(document.getElementById('col-attend').value),
+    entry:       detected.entry   >=0 ? detected.entry   : parseInt(document.getElementById('col-entry').value),
+    exit:        detected.exit    >=0 ? detected.exit    : parseInt(document.getElementById('col-exit').value),
+    outStart:    detected.outStart>=0 ? detected.outStart: parseInt(document.getElementById('col-out-start').value),
+    outEnd:      detected.outEnd  >=0 ? detected.outEnd  : parseInt(document.getElementById('col-out-end').value),
+    leaveStatus: parseInt(document.getElementById('col-leave-status').value),
+  };
+  document.getElementById('col-name').value = c.name;
+  document.getElementById('col-status').value = c.status;
+  document.getElementById('col-attend').value = c.attend;
+  document.getElementById('col-entry').value = c.entry;
+  document.getElementById('col-exit').value = c.exit;
+  document.getElementById('col-out-start').value = c.outStart;
+  document.getElementById('col-out-end').value = c.outEnd;
 
-// 컨텍스트 저장 (saveMorningLeave에서 오후 보고 재생성용)
-window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult };
+  const lateMin  = timeToMin(document.getElementById('late-threshold').value);
+  const earlyMin = timeToMin(document.getElementById('early-leave-threshold').value);
+  const course   = document.getElementById('course-name').value.trim();
+  const gen      = document.getElementById('course-gen').value.trim();
+  const dateVal  = document.getElementById('report-date').value;
+  const DAY = ['일','월','화','수','목','금','토'];
+  let rd;
+  if (dateVal) { const [y,m,d]=dateVal.split('-').map(Number); rd=new Date(y,m-1,d); } else rd=new Date();
+  const dateStr     = `${rd.getMonth()+1}/${rd.getDate()}(${DAY[rd.getDay()]})`;
+  const courseLabel = course ? `[${course}${gen?`_${gen}기`:''}] ` : '';
+  const reviewCount  = parseInt(document.getElementById('review-count').value)||0;
+  const reviewResult = document.getElementById('review-result').value.trim()||'이상 없음';
 
-let morning=`${courseLabel}${dateStr} 오전 출결 현황 공유\n• 출석: ${presentCount}명\n• 지각/미입실: ${lateAbsentCount}명`;
-if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
-morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  ◦ ${i}`;});
+  const exclude = ['중도탈락','조기취업','수료','훈련포기','자진퇴소'];
+  const dataRows = rows.filter(r => {
+    if (r.length<=c.name) return false;
+    const name=r[c.name]||'';
+    if (!name||name==='성명') return false;
+    if (isNaN(parseInt(r[0]))) return false;
+    const status=c.status>=0?(r[c.status]||''):'';
+    return !exclude.some(ex=>status.includes(ex));
+  });
+  if (dataRows.length===0) { setStatus('⚠ 수강생 데이터를 찾지 못했어요. 열 번호를 수동으로 확인해주세요.','err'); return; }
 
-// 오전에 이미 저장된 휴공가는 오후 추가 휴공가에서 제외
-const additionalLeave = morningLeaveNames.length > 0
-? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
-: leaveList;
-let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${outing.length}명`;
-if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
-afternoon+=`\n• 추가 휴공가: ${additionalLeave.length}명`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  ◦ ${i}`;});
+  const total=dataRows.length, absent=[], late=[], earlyLeave=[], outing=[], noExitQR=[], leaveList=[];
+  dataRows.forEach(r => {
+    const name=r[c.name]||'';
+    const entryRaw=c.entry>=0?(r[c.entry]||''):'';
+    const exitRaw=c.exit>=0?(r[c.exit]||''):'';
+    const outStartRaw=c.outStart>=0?(r[c.outStart]||''):'';
+    const outEndRaw=c.outEnd>=0?(r[c.outEnd]||''):'';
+    const leaveStatusRaw=c.leaveStatus>=0?(r[c.leaveStatus]||''):'';
+    if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
+    const entryMin=parseTime(entryRaw), exitMin=parseTime(exitRaw);
+    const outStartMin=parseTime(outStartRaw), outEndMin=parseTime(outEndRaw);
+    if (entryMin===null && isEmpty(entryRaw)) { absent.push({name}); }
+    else {
+      if (entryMin!==null && entryMin>=lateMin)  late.push({name,time:fmtTime(entryRaw)});
+      if (exitMin===null  && isEmpty(exitRaw))    noExitQR.push({name});
+      if (exitMin!==null  && exitMin<earlyMin)    earlyLeave.push({name,time:fmtTime(exitRaw)});
+    }
+    if (outStartMin!==null) outing.push({name,startTime:fmtTime(outStartRaw),endTime:outEndMin!==null?fmtTime(outEndRaw):null});
+  });
 
-const irregular=[];
-late.forEach(({name,time})=>irregular.push(`${name}(지각 ${time})`));
-outing.forEach(({name,startTime,endTime})=>irregular.push(`${name}(외출 ${startTime}~${endTime||'미복귀'})`));
-earlyLeave.forEach(({name,time})=>irregular.push(`${name}(조퇴 ${time})`));
-let final=`${courseLabel}${dateStr} 최종 확정 출결 공유\n• 출석: ${presentCount}명\n• 퇴실 QR 미촬영: ${noExitQR.length}명`;
-if(noExitQR.length>0)noExitQR.forEach(({name})=>{final+=`\n  ◦ ${name}`;});
-final+=`\n• 지각/외출/조퇴: ${irregular.length}명`;if(irregular.length>0)irregular.forEach(i=>{final+=`\n  ◦ ${i}`;});
-final+=`\n• 출석입력요청 검토 결과\n  ◦ 검토 대상: ${reviewCount}건\n  ◦ 검토 결과: ${reviewResult}`;
+  const presentCount   = total-leaveList.length-absent.length;
+  const lateAbsentCount= absent.length+late.length;
 
-window._lastLeaveList = [...leaveList];
-const mlInput = document.getElementById('morning-leave-input');
-if (mlInput) { mlInput.value = leaveList.map(item => item.split('(')[0]).join(', '); }
-reports={morning,afternoon,final};
-document.getElementById('report-card').style.display='flex';
-switchTab(activeTab);
-setStatus(`✅ 분석 완료 — 총 ${total}명 | 출석 ${presentCount}명 | 지각/미입실 ${lateAbsentCount}명 | 외출 ${outing.length}명 | 휴공가 ${leaveList.length}명`,'ok');
-document.getElementById('report-card').scrollIntoView({behavior:'smooth'});
+  const saveBtn = document.getElementById('save-morning-btn');
+  const alreadySaved = saveBtn && saveBtn.classList.contains('saved');
+  if (!alreadySaved) {
+    const mlInput = document.getElementById('morning-leave-input');
+    if (mlInput) mlInput.value = leaveList.map(item => item.split('(')[0]).join(', ');
+  }
+
+  window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult };
+
+  let morning=`${courseLabel}${dateStr} 오전 출결 현황 공유\n• 출석: ${presentCount}명\n• 지각/미입실: ${lateAbsentCount}명`;
+  if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
+  morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  ◦ ${i}`;});
+
+  const additionalLeave = morningLeaveNames.length > 0
+    ? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+    : leaveList;
+  let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${presentCount}명\n• 외출: ${outing.length}명`;
+  if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+  afternoon+=`\n• 추가 휴공가: ${additionalLeave.length}명`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  ◦ ${i}`;});
+
+  const irregular=[];
+  late.forEach(({name,time})=>irregular.push(`${name}(지각 ${time})`));
+  outing.forEach(({name,startTime,endTime})=>irregular.push(`${name}(외출 ${startTime}~${endTime||'미복귀'})`));
+  earlyLeave.forEach(({name,time})=>irregular.push(`${name}(조퇴 ${time})`));
+  let final=`${courseLabel}${dateStr} 최종 확정 출결 공유\n• 출석: ${presentCount}명\n• 퇴실 QR 미촬영: ${noExitQR.length}명`;
+  if(noExitQR.length>0)noExitQR.forEach(({name})=>{final+=`\n  ◦ ${name}`;});
+  final+=`\n• 지각/외출/조퇴: ${irregular.length}명`;if(irregular.length>0)irregular.forEach(i=>{final+=`\n  ◦ ${i}`;});
+  final+=`\n• 출석입력요청 검토 결과\n  ◦ 검토 대상: ${reviewCount}건\n  ◦ 검토 결과: ${reviewResult}`;
+
+  reports={morning,afternoon,final};
+  document.getElementById('report-card').style.display='flex';
+  switchTab(activeTab);
+  setStatus(`✅ 분석 완료 — 총 ${total}명 | 출석 ${presentCount}명 | 지각/미입실 ${lateAbsentCount}명 | 외출 ${outing.length}명 | 휴공가 ${leaveList.length}명`,'ok');
+  document.getElementById('report-card').scrollIntoView({behavior:'smooth'});
 }
 
 function switchTab(tab) {
-activeTab=tab;
-document.querySelectorAll('.tab').forEach(t=>{
-const labels={morning:'오전',afternoon:'오후',final:'최종'};
-t.classList.toggle('active',t.textContent.includes(labels[tab]));
-});
-document.getElementById('report-text').textContent=reports[tab]||'';
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>{
+    const labels={morning:'오전',afternoon:'오후',final:'최종'};
+    t.classList.toggle('active',t.textContent.includes(labels[tab]));
+  });
+  document.getElementById('report-text').textContent=reports[tab]||'';
 }
 
 function saveMorningLeave() {
-const mlInputEl = document.getElementById('morning-leave-input');
-morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
-
-// 오후 보고 즉시 갱신
-const ctx = window._analyzeContext;
-if (ctx) {
-const addLeave = morningLeaveNames.length > 0
-? ctx.leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
-: ctx.leaveList;
-let aft = `${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${ctx.outing.length}명`;
-if(ctx.outing.length>0) ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
-aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
-reports.afternoon = aft;
-if (activeTab === 'afternoon') document.getElementById('report-text').textContent = aft;
-}
-
-// 버튼은 텍스트 유지, 색상만 변경 / 옆에 "저장됨 ✓" 표시
-const btn = document.getElementById('save-morning-btn');
-if (btn) btn.classList.add('saved');
-const el = document.getElementById('save-morning-done');
-if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
+  const mlInputEl = document.getElementById('morning-leave-input');
+  morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
+  localStorage.setItem(getMorningLeaveKey(), JSON.stringify(morningLeaveNames));
+  const ctx = window._analyzeContext;
+  if (ctx) {
+    const addLeave = morningLeaveNames.length > 0
+      ? ctx.leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+      : ctx.leaveList;
+    let aft = `${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${ctx.presentCount}명\n• 외출: ${ctx.outing.length}명`;
+    if(ctx.outing.length>0) ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+    aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
+    reports.afternoon = aft;
+    if (activeTab === 'afternoon') document.getElementById('report-text').textContent = aft;
+  }
+  const btn = document.getElementById('save-morning-btn');
+  if (btn) btn.classList.add('saved');
+  const el = document.getElementById('save-morning-done');
+  if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
 }
 
 function textToHtml(text) {
-return text.split('\n').map((line,i)=>{
-const ind=line.startsWith('  ');
-const esc=line.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-if(i===0)return`<b>${esc}</b>`;
-if(ind)return`&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
-return esc;
-}).join('<br>');
+  return text.split('\n').map((line,i)=>{
+    const ind=line.startsWith('  ');
+    const esc=line.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    if(i===0)return`<b>${esc}</b>`;
+    if(ind)return`&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
+    return esc;
+  }).join('<br>');
 }
 
 function copyReport() {
-const text=reports[activeTab]; if(!text)return;
-const div=document.createElement('div');
-div.setAttribute('contenteditable','true');
-div.innerHTML=textToHtml(text);
-div.style.cssText='position:fixed;opacity:0;left:-9999px;';
-document.body.appendChild(div);
-const sel=window.getSelection(),rng=document.createRange();
-rng.selectNodeContents(div);sel.removeAllRanges();sel.addRange(rng);
-document.execCommand('copy');
-document.body.removeChild(div);sel.removeAllRanges();
-const el=document.getElementById('copy-done');
-el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);
+  const text=reports[activeTab]; if(!text)return;
+  const div=document.createElement('div');
+  div.setAttribute('contenteditable','true');
+  div.innerHTML=textToHtml(text);
+  div.style.cssText='position:fixed;opacity:0;left:-9999px;';
+  document.body.appendChild(div);
+  const sel=window.getSelection(),rng=document.createRange();
+  rng.selectNodeContents(div);sel.removeAllRanges();sel.addRange(rng);
+  document.execCommand('copy');
+  document.body.removeChild(div);sel.removeAllRanges();
+  const el=document.getElementById('copy-done');
+  el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);
 }
 
 function toggleColMap() { document.getElementById('col-map').classList.toggle('show'); }
 
+function setStatus(msg, type) {
+  const el = document.getElementById('status-bar');
+  el.textContent = msg;
+  el.className = 'status-bar' + (type ? ` ${type}` : '');
+}
+
 function clearData() {
-document.getElementById('paste-area').value='';
-document.getElementById('file-input').value='';
-document.getElementById('report-card').style.display='none';
-  setStatus('');
-  reports={morning:'',afternoon:'',final:''};
-  window._lastLeaveList=[];
+  document.getElementById('paste-area').value='';
+  document.getElementById('file-input').value='';
+  document.getElementById('report-card').style.display='none';
+  reports = { morning:'', afternoon:'', final:'' };
+  window._analyzeContext = null;
+  setStatus('', '');
 }
 
 function clearAll() {
   clearData();
-  morningLeaveNames = [];
-  window._lastLeaveList = [];
-  window._analyzeContext = null;
-  const mlI = document.getElementById('morning-leave-input'); if (mlI) mlI.value = '';
-  const mlB = document.getElementById('save-morning-btn'); if (mlB) mlB.classList.remove('saved');
-}
-
-function setStatus(msg, type='') {
-  const el = document.getElementById('status-bar');
-  el.textContent = msg;
-  el.className = 'status-bar' + (type ? ' ' + type : '');
+  setStatus('출결 데이터가 초기화되었습니다. 오전 휴공가 저장 내역은 유지됩니다.', '');
 }
 </script>
 </body>
