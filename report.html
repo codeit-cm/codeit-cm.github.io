@@ -332,6 +332,11 @@ outline: none;
 const PROFILES_KEY = 'report_profiles_v2';
 let activeIdx = -1;
 
+// ── 변수를 IIFE보다 먼저 선언 (TDZ 방지) ──
+let reports = { morning:'', afternoon:'', final:'' };
+let activeTab = 'morning';
+let morningLeaveNames = [];
+
 function getProfiles() {
   try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '[]'); }
   catch { return []; }
@@ -454,10 +459,6 @@ document.addEventListener('keydown', e => {
   if (getProfiles().length === 0) toggleAddForm();
   loadMorningLeave();
 })();
-
-let reports = { morning:'', afternoon:'', final:'' };
-let activeTab = 'morning';
-let morningLeaveNames = [];
 
 function handleFile(e) {
   const file = e.target.files[0];
