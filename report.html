@@ -150,7 +150,6 @@ text-align: center;
 background: #fff;
 outline: none;
 }
-/* ── 과정 스위처 ── */
 .switcher-bar {
 display: flex;
 align-items: center;
@@ -161,12 +160,7 @@ border: 1px solid #e5e5e3;
 border-radius: 12px;
 padding: 10px 14px;
 }
-.switcher-label {
-font-size: 12px;
-color: #aaa;
-white-space: nowrap;
-margin-right: 2px;
-}
+.switcher-label { font-size: 12px; color: #aaa; white-space: nowrap; margin-right: 2px; }
 .profile-chip {
 display: inline-flex;
 align-items: center;
@@ -183,12 +177,7 @@ white-space: nowrap;
 }
 .profile-chip:hover { border-color: #8b7cf8; color: #6c4ef2; background: #f9f8ff; }
 .profile-chip.active { background: #8b7cf8; border-color: #8b7cf8; color: #fff; font-weight: 600; }
-.profile-chip .del-x {
-font-size: 11px;
-opacity: 0.5;
-margin-left: 2px;
-line-height: 1;
-}
+.profile-chip .del-x { font-size: 11px; opacity: 0.5; margin-left: 2px; line-height: 1; }
 .profile-chip:hover .del-x { opacity: 1; }
 .profile-chip.active .del-x { opacity: 0.7; }
 .add-chip-btn {
@@ -206,7 +195,6 @@ transition: all 0.12s;
 white-space: nowrap;
 }
 .add-chip-btn:hover { border-color: #8b7cf8; color: #6c4ef2; }
-/* ── 추가 폼 (인라인) ── */
 .add-form {
 display: none;
 align-items: center;
@@ -229,7 +217,6 @@ outline: none;
 .add-form input:focus { border-color: #8b7cf8; }
 .add-form input.course-in { width: 70px; }
 .add-form input.cohort-in { width: 55px; }
-.add-form-hint { font-size: 11px; color: #aaa; }
 </style>
 </head>
 <body>
@@ -240,7 +227,6 @@ outline: none;
 출결 보고 생성기
 </h1>
 
-<!-- ── 과정 스위처 ── -->
 <div class="switcher-bar" id="switcher-bar">
 <span class="switcher-label">과정 · 기수</span>
 <div id="chip-list" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
@@ -254,7 +240,6 @@ outline: none;
 </div>
 </div>
 
-<!-- 기준 설정 -->
 <div class="card">
 <div class="card-title">기준 설정</div>
 <input type="hidden" id="course-name" />
@@ -284,7 +269,6 @@ outline: none;
 </div>
 </div>
 
-<!-- 데이터 입력 -->
 <div class="card">
 <div class="card-title">출결 데이터 입력</div>
 <label class="upload-area" for="file-input">
@@ -312,7 +296,6 @@ outline: none;
 <div id="status-bar" class="status-bar"></div>
 </div>
 
-<!-- 보고 출력 -->
 <div class="card" id="report-card" style="display:none;">
 <div class="card-title">보고 멘트</div>
 <div class="report-tabs">
@@ -329,11 +312,12 @@ outline: none;
 </div>
 
 <script>
-const PROFILES_KEY = 'report_profiles_v2';
-let activeIdx = -1;
+const PROFILES_KEY   = 'report_profiles_v2';
+const ACTIVE_IDX_KEY = 'report_active_idx';  // 마지막 선택 프로파일 기억
 
-// ── 변수를 IIFE보다 먼저 선언 (TDZ 방지) ──
-let reports = { morning:'', afternoon:'', final:'' };
+// 전역 변수 — IIFE보다 먼저 선언
+let activeIdx = -1;
+let reports   = { morning:'', afternoon:'', final:'' };
 let activeTab = 'morning';
 let morningLeaveNames = [];
 
@@ -390,9 +374,10 @@ function switchProfile(i) {
   const p = profiles[i];
   if (!p) return;
   activeIdx = i;
+  localStorage.setItem(ACTIVE_IDX_KEY, i);  // 선택 기억
   document.getElementById('course-name').value = p.course || '';
-  document.getElementById('course-gen').value = p.cohort || '';
-  if (p.late) document.getElementById('late-threshold').value = p.late;
+  document.getElementById('course-gen').value  = p.cohort || '';
+  if (p.late)  document.getElementById('late-threshold').value = p.late;
   if (p.early) document.getElementById('early-leave-threshold').value = p.early;
   document.title = `출결 보고 · ${p.label}`;
   clearData();
@@ -404,8 +389,8 @@ function deleteProfile(i) {
   const profiles = getProfiles();
   profiles.splice(i, 1);
   saveProfiles(profiles);
-  if (activeIdx === i) activeIdx = -1;
-  else if (activeIdx > i) activeIdx--;
+  if (activeIdx === i) { activeIdx = -1; localStorage.removeItem(ACTIVE_IDX_KEY); }
+  else if (activeIdx > i) { activeIdx--; localStorage.setItem(ACTIVE_IDX_KEY, activeIdx); }
   renderChips();
 }
 
@@ -425,12 +410,11 @@ function addProfile() {
   const cohort = document.getElementById('new-cohort').value.trim();
   if (!course && !cohort) return;
   const label = `${course}${cohort ? ` ${cohort}기` : ''}`.trim();
-  const late = document.getElementById('late-threshold').value || '09:11';
+  const late  = document.getElementById('late-threshold').value || '09:11';
   const early = document.getElementById('early-leave-threshold').value || '18:50';
   const profiles = getProfiles();
   if (profiles.find(p => p.label === label)) {
-    const idx = profiles.findIndex(p => p.label === label);
-    switchProfile(idx);
+    switchProfile(profiles.findIndex(p => p.label === label));
   } else {
     profiles.push({ label, course, cohort, late, early });
     saveProfiles(profiles);
@@ -448,15 +432,30 @@ document.addEventListener('keydown', e => {
   const now = new Date();
   document.getElementById('report-date').value =
     `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
   const p = new URLSearchParams(location.search);
   if (p.get('course') || p.get('cohort')) {
     document.getElementById('course-name').value = p.get('course') || '';
-    document.getElementById('course-gen').value = p.get('cohort') || '';
-    if (p.get('late')) document.getElementById('late-threshold').value = p.get('late');
+    document.getElementById('course-gen').value  = p.get('cohort') || '';
+    if (p.get('late'))  document.getElementById('late-threshold').value = p.get('late');
     if (p.get('early')) document.getElementById('early-leave-threshold').value = p.get('early');
   }
+
+  // 마지막 선택 프로파일 복원 → loadMorningLeave가 올바른 키로 읽음
+  const profiles = getProfiles();
+  const savedIdx = parseInt(localStorage.getItem(ACTIVE_IDX_KEY) ?? '-1');
+  if (savedIdx >= 0 && savedIdx < profiles.length) {
+    activeIdx = savedIdx;
+    const prof = profiles[savedIdx];
+    document.getElementById('course-name').value = prof.course || '';
+    document.getElementById('course-gen').value  = prof.cohort || '';
+    if (prof.late)  document.getElementById('late-threshold').value = prof.late;
+    if (prof.early) document.getElementById('early-leave-threshold').value = prof.early;
+    document.title = `출결 보고 · ${prof.label}`;
+  }
+
   renderChips();
-  if (getProfiles().length === 0) toggleAddForm();
+  if (profiles.length === 0) toggleAddForm();
   loadMorningLeave();
 })();
 
@@ -465,8 +464,8 @@ function handleFile(e) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = ev => {
-    const wb = XLSX.read(ev.target.result, { type: 'array' });
-    const ws = wb.Sheets[wb.SheetNames[0]];
+    const wb  = XLSX.read(ev.target.result, { type: 'array' });
+    const ws  = wb.Sheets[wb.SheetNames[0]];
     const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
     document.getElementById('paste-area').value = raw;
     setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
@@ -483,13 +482,13 @@ function autoDetectCols(rows) {
   rows.slice(0,3).forEach(row => {
     row.forEach((cell, i) => {
       const c = (cell||'').replace(/\s|\n/g,'');
-      if (c==='성명' && map.name ===-1) map.name = i;
-      if (c==='상태' && map.status ===-1) map.status = i;
-      if (c==='출결상태' && map.attend ===-1) map.attend = i;
-      if (c.includes('입실') && map.entry ===-1) map.entry = i;
-      if (c.includes('퇴실') && map.exit ===-1) map.exit = i;
-      if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
-      if (c.includes('복귀') && map.outEnd ===-1) map.outEnd = i;
+      if (c==='성명'      && map.name    ===-1) map.name    = i;
+      if (c==='상태'      && map.status  ===-1) map.status  = i;
+      if (c==='출결상태'  && map.attend  ===-1) map.attend  = i;
+      if (c.includes('입실') && map.entry   ===-1) map.entry   = i;
+      if (c.includes('퇴실') && map.exit    ===-1) map.exit    = i;
+      if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart = i;
+      if (c.includes('복귀') && map.outEnd  ===-1) map.outEnd  = i;
     });
   });
   return map;
@@ -509,7 +508,7 @@ function fmtTime(s) {
 function analyze() {
   const text = document.getElementById('paste-area').value.trim();
   if (!text) { setStatus('데이터를 먼저 입력해주세요.', 'err'); return; }
-  const rows = parseRows(text);
+  const rows     = parseRows(text);
   const detected = autoDetectCols(rows);
   const c = {
     name:        detected.name    >=0 ? detected.name    : parseInt(document.getElementById('col-name').value),
@@ -521,13 +520,13 @@ function analyze() {
     outEnd:      detected.outEnd  >=0 ? detected.outEnd  : parseInt(document.getElementById('col-out-end').value),
     leaveStatus: parseInt(document.getElementById('col-leave-status').value),
   };
-  document.getElementById('col-name').value = c.name;
-  document.getElementById('col-status').value = c.status;
-  document.getElementById('col-attend').value = c.attend;
-  document.getElementById('col-entry').value = c.entry;
-  document.getElementById('col-exit').value = c.exit;
+  document.getElementById('col-name').value      = c.name;
+  document.getElementById('col-status').value    = c.status;
+  document.getElementById('col-attend').value    = c.attend;
+  document.getElementById('col-entry').value     = c.entry;
+  document.getElementById('col-exit').value      = c.exit;
   document.getElementById('col-out-start').value = c.outStart;
-  document.getElementById('col-out-end').value = c.outEnd;
+  document.getElementById('col-out-end').value   = c.outEnd;
 
   const lateMin  = timeToMin(document.getElementById('late-threshold').value);
   const earlyMin = timeToMin(document.getElementById('early-leave-threshold').value);
@@ -542,28 +541,30 @@ function analyze() {
   const reviewCount  = parseInt(document.getElementById('review-count').value)||0;
   const reviewResult = document.getElementById('review-result').value.trim()||'이상 없음';
 
-  const exclude = ['중도탈락','조기취업','수료','훈련포기','자진퇴소'];
+  const exclude  = ['중도탈락','조기취업','수료','훈련포기','자진퇴소'];
   const dataRows = rows.filter(r => {
     if (r.length<=c.name) return false;
-    const name=r[c.name]||'';
-    if (!name||name==='성명') return false;
+    const name = r[c.name]||'';
+    if (!name || name==='성명') return false;
     if (isNaN(parseInt(r[0]))) return false;
-    const status=c.status>=0?(r[c.status]||''):'';
+    const status = c.status>=0 ? (r[c.status]||'') : '';
     return !exclude.some(ex=>status.includes(ex));
   });
   if (dataRows.length===0) { setStatus('⚠ 수강생 데이터를 찾지 못했어요. 열 번호를 수동으로 확인해주세요.','err'); return; }
 
   const total=dataRows.length, absent=[], late=[], earlyLeave=[], outing=[], noExitQR=[], leaveList=[];
   dataRows.forEach(r => {
-    const name=r[c.name]||'';
-    const entryRaw=c.entry>=0?(r[c.entry]||''):'';
-    const exitRaw=c.exit>=0?(r[c.exit]||''):'';
-    const outStartRaw=c.outStart>=0?(r[c.outStart]||''):'';
-    const outEndRaw=c.outEnd>=0?(r[c.outEnd]||''):'';
-    const leaveStatusRaw=c.leaveStatus>=0?(r[c.leaveStatus]||''):'';
+    const name          = r[c.name]||'';
+    const entryRaw      = c.entry      >=0 ? (r[c.entry]||'')      : '';
+    const exitRaw       = c.exit       >=0 ? (r[c.exit]||'')       : '';
+    const outStartRaw   = c.outStart   >=0 ? (r[c.outStart]||'')   : '';
+    const outEndRaw     = c.outEnd     >=0 ? (r[c.outEnd]||'')     : '';
+    const leaveStatusRaw= c.leaveStatus>=0 ? (r[c.leaveStatus]||'') : '';
     if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
-    const entryMin=parseTime(entryRaw), exitMin=parseTime(exitRaw);
-    const outStartMin=parseTime(outStartRaw), outEndMin=parseTime(outEndRaw);
+    const entryMin    = parseTime(entryRaw);
+    const exitMin     = parseTime(exitRaw);
+    const outStartMin = parseTime(outStartRaw);
+    const outEndMin   = parseTime(outEndRaw);
     if (entryMin===null && isEmpty(entryRaw)) { absent.push({name}); }
     else {
       if (entryMin!==null && entryMin>=lateMin)  late.push({name,time:fmtTime(entryRaw)});
@@ -573,14 +574,15 @@ function analyze() {
     if (outStartMin!==null) outing.push({name,startTime:fmtTime(outStartRaw),endTime:outEndMin!==null?fmtTime(outEndRaw):null});
   });
 
-  const presentCount   = total-leaveList.length-absent.length;
-  const lateAbsentCount= absent.length+late.length;
+  const presentCount    = total-leaveList.length-absent.length;
+  const lateAbsentCount = absent.length+late.length;
 
-  const saveBtn = document.getElementById('save-morning-btn');
-  const alreadySaved = saveBtn && saveBtn.classList.contains('saved');
+  // 이미 저장된 경우 오전 휴공가 input 덮어쓰지 않음
+  const saveBtn     = document.getElementById('save-morning-btn');
+  const alreadySaved= saveBtn && saveBtn.classList.contains('saved');
   if (!alreadySaved) {
     const mlInput = document.getElementById('morning-leave-input');
-    if (mlInput) mlInput.value = leaveList.map(item => item.split('(')[0]).join(', ');
+    if (mlInput) mlInput.value = leaveList.map(item=>item.split('(')[0]).join(', ');
   }
 
   window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult };
@@ -589,8 +591,8 @@ function analyze() {
   if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
   morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  ◦ ${i}`;});
 
-  const additionalLeave = morningLeaveNames.length > 0
-    ? leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+  const additionalLeave = morningLeaveNames.length>0
+    ? leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
     : leaveList;
   let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${presentCount}명\n• 외출: ${outing.length}명`;
   if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
@@ -623,31 +625,31 @@ function switchTab(tab) {
 
 function saveMorningLeave() {
   const mlInputEl = document.getElementById('morning-leave-input');
-  morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
+  morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s=>s.trim()).filter(Boolean);
   localStorage.setItem(getMorningLeaveKey(), JSON.stringify(morningLeaveNames));
   const ctx = window._analyzeContext;
   if (ctx) {
-    const addLeave = morningLeaveNames.length > 0
-      ? ctx.leaveList.filter(item => !morningLeaveNames.includes(item.split('(')[0]))
+    const addLeave = morningLeaveNames.length>0
+      ? ctx.leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
       : ctx.leaveList;
-    let aft = `${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${ctx.presentCount}명\n• 외출: ${ctx.outing.length}명`;
-    if(ctx.outing.length>0) ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+    let aft=`${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${ctx.presentCount}명\n• 외출: ${ctx.outing.length}명`;
+    if(ctx.outing.length>0)ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
     aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
-    reports.afternoon = aft;
-    if (activeTab === 'afternoon') document.getElementById('report-text').textContent = aft;
+    reports.afternoon=aft;
+    if(activeTab==='afternoon') document.getElementById('report-text').textContent=aft;
   }
-  const btn = document.getElementById('save-morning-btn');
-  if (btn) btn.classList.add('saved');
-  const el = document.getElementById('save-morning-done');
-  if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1800); }
+  const btn=document.getElementById('save-morning-btn');
+  if(btn) btn.classList.add('saved');
+  const el=document.getElementById('save-morning-done');
+  if(el){ el.style.opacity='1'; setTimeout(()=>el.style.opacity='0',1800); }
 }
 
 function textToHtml(text) {
   return text.split('\n').map((line,i)=>{
     const ind=line.startsWith('  ');
     const esc=line.trim().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    if(i===0)return`<b>${esc}</b>`;
-    if(ind)return`&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
+    if(i===0) return `<b>${esc}</b>`;
+    if(ind)   return `&nbsp;&nbsp;&nbsp;&nbsp;${esc}`;
     return esc;
   }).join('<br>');
 }
@@ -659,34 +661,34 @@ function copyReport() {
   div.innerHTML=textToHtml(text);
   div.style.cssText='position:fixed;opacity:0;left:-9999px;';
   document.body.appendChild(div);
-  const sel=window.getSelection(),rng=document.createRange();
-  rng.selectNodeContents(div);sel.removeAllRanges();sel.addRange(rng);
+  const sel=window.getSelection(), rng=document.createRange();
+  rng.selectNodeContents(div); sel.removeAllRanges(); sel.addRange(rng);
   document.execCommand('copy');
-  document.body.removeChild(div);sel.removeAllRanges();
+  document.body.removeChild(div); sel.removeAllRanges();
   const el=document.getElementById('copy-done');
-  el.style.opacity='1';setTimeout(()=>el.style.opacity='0',1500);
+  el.style.opacity='1'; setTimeout(()=>el.style.opacity='0',1500);
 }
 
 function toggleColMap() { document.getElementById('col-map').classList.toggle('show'); }
 
 function setStatus(msg, type) {
-  const el = document.getElementById('status-bar');
-  el.textContent = msg;
-  el.className = 'status-bar' + (type ? ` ${type}` : '');
+  const el=document.getElementById('status-bar');
+  el.textContent=msg;
+  el.className='status-bar'+(type ? ` ${type}` : '');
 }
 
 function clearData() {
   document.getElementById('paste-area').value='';
   document.getElementById('file-input').value='';
   document.getElementById('report-card').style.display='none';
-  reports = { morning:'', afternoon:'', final:'' };
-  window._analyzeContext = null;
-  setStatus('', '');
+  reports={ morning:'', afternoon:'', final:'' };
+  window._analyzeContext=null;
+  setStatus('','');
 }
 
 function clearAll() {
   clearData();
-  setStatus('출결 데이터가 초기화되었습니다. 오전 휴공가 저장 내역은 유지됩니다.', '');
+  setStatus('출결 데이터가 초기화되었습니다. 오전 휴공가 저장 내역은 유지됩니다.','');
 }
 </script>
 </body>
