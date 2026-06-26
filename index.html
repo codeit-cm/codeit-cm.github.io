@@ -185,7 +185,7 @@ h1 { font-size: 16px; font-weight: 600; color: #1a1a1a; display: flex; align-ite
   background: #fffbf2;
   border: 1.5px solid #fde68a;
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 1.25rem 1.4rem;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -285,6 +285,34 @@ h1 { font-size: 16px; font-weight: 600; color: #1a1a1a; display: flex; align-ite
       복사하기
     </button>
     <span class="copy-done" id="copy-done">복사됨! 진행 중 목록에 추가됨</span>
+  </div>
+</div>
+
+<!-- ── ZEP 안내 멘트 카드 ── -->
+<div class="card zep">
+  <div class="card-title" style="color:#1d4ed8;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    ZEP 안내 멘트
+  </div>
+  <div class="card-sub">최초 자리비움 시각 기준 · ZEP 이탈 후 디스코드 안내 멘트</div>
+
+  <div class="row">
+    <label>자리비움 시각</label>
+    <input type="time" id="zep-time" oninput="renderZep()" />
+    <button class="btn-now" onclick="setZepNow()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      지금으로
+    </button>
+  </div>
+
+  <div class="message-box placeholder" id="zep-box">자리비움 시각을 입력하면 자동 생성됩니다.</div>
+
+  <div class="footer">
+    <button class="btn-copy" onclick="copyZep()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      복사하기
+    </button>
+    <span class="copy-done" id="zep-copy-done">복사됨!</span>
   </div>
 </div>
 
