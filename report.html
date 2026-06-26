@@ -257,7 +257,6 @@ outline: none;
 <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="width:100%;" />
 <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
 <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
-<span class="save-morning-done" id="save-morning-done">저장됨 ✓</span>
 <button class="btn btn-sm" id="clear-morning-btn" onclick="clearMorningLeave()" style="font-size:11px;padding:4px 8px;color:#aaa;border-color:#e5e5e3;">초기화</button>
 </div>
 </div>
@@ -355,8 +354,7 @@ function loadMorningLeave() {
   if (mlInput) mlInput.value = morningLeaveNames.join(', ');
   const btn = document.getElementById('save-morning-btn');
   if (btn) btn.classList.toggle('saved', morningLeaveNames.length > 0);
-  const el = document.getElementById('save-morning-done');
-  if (el) el.style.opacity = '0';
+
 }
 
 function clearMorningLeave() {
@@ -639,9 +637,11 @@ function saveMorningLeave() {
     if(activeTab==='afternoon') document.getElementById('report-text').textContent=aft;
   }
   const btn=document.getElementById('save-morning-btn');
-  if(btn) btn.classList.add('saved');
-  const el=document.getElementById('save-morning-done');
-  if(el){ el.style.opacity='1'; setTimeout(()=>el.style.opacity='0',1800); }
+  if(btn) {
+    btn.classList.add('saved');
+    btn.textContent='저장됨 ✓';
+    setTimeout(()=>{ btn.textContent='오전 휴공가 저장'; }, 1500);
+  }
 }
 
 function textToHtml(text) {
