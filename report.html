@@ -476,21 +476,23 @@ function parseRows(text) {
 }
 function isEmpty(v) { return !v || v === '-' || v === '' || v === 'null' || v === 'undefined'; }
 function autoDetectCols(rows) {
-  const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
-  rows.slice(0,3).forEach(row => {
-    row.forEach((cell, i) => {
-      const c = (cell||'').replace(/\s|\n/g,'');
-      if (c==='성명'      && map.name    ===-1) map.name    = i;
-      if (c==='상태'      && map.status  ===-1) map.status  = i;
-      if (c==='출결상태'  && map.attend  ===-1) map.attend  = i;
-      if (c.includes('입실') && map.entry   ===-1) map.entry   = i;
-      if (c.includes('퇴실') && map.exit    ===-1) map.exit    = i;
-      if (c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart = i;
-      if (c.includes('복귀') && map.outEnd  ===-1) map.outEnd  = i;
-    });
-  });
-  return map;
+const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
+const scanRows = rows.slice(0, Math.min(10, rows.length));
+scanRows.forEach(row => {
+row.forEach((cell, i) => {
+const c = (cell||'').replace(/\s|\n/g,'');
+if (c==='성명' && map.name===-1) map.name = i;
+if ((c.includes('훈련상태')||c==='상태') && map.status===-1) map.status = i;
+if (c==='출결상태' && map.attend===-1) map.attend = i;
+if (c.includes('입실') && map.entry===-1) map.entry = i;
+if (c.includes('퇴실') && map.exit===-1) map.exit = i;
+if (c.includes('외출') && c.includes('시작') && map.outStart===-1) map.outStart = i;
+if (c.includes('외출') && c.includes('복귀') && map.outEnd===-1) map.outEnd = i;
+});
+});
+return map;
 }
+
 function parseTime(s) {
   if (isEmpty(s)) return null;
   const m = s.match(/(\d{1,2}):(\d{2})/);
