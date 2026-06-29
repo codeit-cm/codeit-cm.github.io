@@ -458,23 +458,19 @@ document.addEventListener('keydown', e => {
 })();
 
 function handleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const wb  = XLSX.read(ev.target.result, { type: 'array' });
-    const ws  = wb.Sheets[wb.SheetNames[0]];
-    const raw = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
-    document.getElementById('paste-area').value = raw;
-    setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
-  };
-  reader.readAsArrayBuffer(file);
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = ev => {
+const wb = XLSX.read(ev.target.result, { type: 'array' });
+const ws = wb.Sheets[wb.SheetNames[0]];
+const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '' });
+const raw = data.map(row => row.map(cell => String(cell||'').replace(/[\r\n]+/g,' ').trim()).join('\t')).join('\n');
+document.getElementById('paste-area').value = raw;
+setStatus('파일 로드 완료. 분석하기를 눌러주세요.', 'ok');
+};
+reader.readAsArrayBuffer(file);
 }
-
-function parseRows(text) {
-  return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
-}
-function isEmpty(v) { return !v || v === '-' || v === '' || v === 'null' || v === 'undefined'; }
 function autoDetectCols(rows) {
 const map = { name:-1, status:-1, attend:-1, entry:-1, exit:-1, outStart:-1, outEnd:-1 };
 const scanRows = rows.slice(0, Math.min(10, rows.length));
@@ -488,11 +484,12 @@ if (c.includes('입실') && map.entry===-1) map.entry = i;
 if (c.includes('퇴실') && map.exit===-1) map.exit = i;
 if (c.includes('외출') && c.includes('시작') && map.outStart===-1) map.outStart = i;
 if (c.includes('외출') && c.includes('복귀') && map.outEnd===-1) map.outEnd = i;
+if (!c.includes('외출') && c.includes('시작') && map.outStart===-1 && i>Math.max(map.exit,7)) map.outStart=i;
+if (!c.includes('외출') && c.includes('복귀') && map.outEnd===-1 && map.outStart>=0) map.outEnd=i;
 });
 });
 return map;
 }
-
 function parseTime(s) {
   if (isEmpty(s)) return null;
   const m = s.match(/(\d{1,2}):(\d{2})/);
