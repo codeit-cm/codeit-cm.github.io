@@ -493,7 +493,18 @@ if (!c.includes('외출') && c.includes('복귀') && map.outEnd===-1 && map.outS
 return map;
 }
 function parseRows(text) {
-return text.trim().split('\n').map(r => r.split('\t').map(c => c.trim()));
+  const rows = [], t = text.trim();
+  let row = [], cell = '', inQ = false;
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === '\r') { /* skip */ }
+    else if (ch === '\t' && !inQ) { row.push(cell.trim()); cell = ''; }
+    else if (ch === '\n' && !inQ) { row.push(cell.trim()); rows.push(row); row = []; cell = ''; }
+    else { cell += ch; }
+  }
+  if (row.length || cell) { row.push(cell.trim()); rows.push(row); }
+  return rows;
 }
 function isEmpty(v) { return !v || v === '-' || v === '\u2013' || v === '' || v === 'null' || v === 'undefined'; }
 
