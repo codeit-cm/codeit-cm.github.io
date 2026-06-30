@@ -609,7 +609,7 @@ function analyze() {
     if (mlInput) mlInput.value = leaveList.map(item=>item.split('(')[0]).join(', ');
   }
 
-  window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult };
+  window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult, late:[...late], absent:[...absent], lateAbsentCount };
 
   let morning=`${courseLabel}${dateStr} 오전 출결 현황 공유\n• 출석: ${presentCount}명\n• 지각/미입실: ${lateAbsentCount}명`;
   if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
@@ -667,6 +667,15 @@ function saveMorningLeave() {
     btn.classList.add('saved');
     btn.textContent='저장됨 ✓';
     setTimeout(()=>{ btn.textContent='오전 휴공가 저장'; }, 1500);
+  if(ctx.absent!==undefined){
+    const filteredAbsent=(ctx.absent||[]).filter(({name})=>!morningLeaveNames.includes(name));
+    const newLACount=filteredAbsent.length+(ctx.late||[]).length;
+    let mor=`${ctx.courseLabel}${ctx.dateStr} 오전 출결 현황 공유\n• 출석: ${ctx.presentCount}명\n• 지각/미입실: ${newLACount}명`;
+    if(newLACount>0){(ctx.late||[]).forEach(({name,time})=>{mor+=`\n  ◦ ${name}(지각 ${time})`;});filteredAbsent.forEach(({name})=>{mor+=`\n  ◦ ${name}(미입실)`;});}
+    mor+=`\n• 휴공가: ${morningLeaveNames.length}명`;if(morningLeaveNames.length>0)morningLeaveNames.forEach(n=>{mor+=`\n  ◦ ${n}`;});
+    reports.morning=mor;
+    if(activeTab==='morning')document.getElementById('report-text').textContent=mor;
+  }
   }
 }
 
