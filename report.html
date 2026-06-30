@@ -613,7 +613,7 @@ function analyze() {
   const alreadySaved= saveBtn && saveBtn.classList.contains('saved');
   if (!alreadySaved) {
     const mlInput = document.getElementById('morning-leave-input');
-    if (mlInput) mlInput.value = leaveList.map(item=>item.split('(')[0]).join(', ');
+    if (mlInput && morningLeaveNames.length === 0) mlInput.value = leaveList.map(item=>item.split('(')[0]).join(', ');
   }
 
   window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult, late:[...late], absent:[...absent], lateAbsentCount };
