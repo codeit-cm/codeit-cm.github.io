@@ -498,13 +498,24 @@ function isEmpty(v) { return !v || v === '-' || v === '\u2013' || v === '' || v 
 function parseTime(s) {
   if (isEmpty(s)) return null;
   const m = s.match(/(\d{1,2}):(\d{2})/);
-  return m ? parseInt(m[1])*60 + parseInt(m[2]) : null;
+  if (m) return parseInt(m[1])*60 + parseInt(m[2]);
+  // xlsx 파일 업로드 시 시간이 소수(하루 분율)로 들어오는 경우 처리
+  const f = parseFloat(s);
+  if (!isNaN(f) && f > 0 && f < 1) return Math.round(f * 24 * 60);
+  return null;
 }
 function timeToMin(hhmm) { const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
 function fmtTime(s) {
   if (isEmpty(s)) return '';
   const m = s.match(/(\d{1,2}:\d{2})/);
-  return m ? m[1] : s;
+  if (m) return m[1];
+  // xlsx 파일 업로드 시 시간이 소수(하루 분율)로 들어오는 경우 처리
+  const f = parseFloat(s);
+  if (!isNaN(f) && f > 0 && f < 1) {
+    const totalMin = Math.round(f * 24 * 60);
+    return String(Math.floor(totalMin/60)).padStart(2,'0') + ':' + String(totalMin%60).padStart(2,'0');
+  }
+  return s;
 }
 
 function analyze() {
@@ -596,7 +607,7 @@ function analyze() {
   const additionalLeave = morningLeaveNames.length>0
     ? leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
     : leaveList;
-  let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${presentCount}명\n• 외출: ${outing.length}명`;
+  let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${outing.length}명`;
   if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
   afternoon+=`\n• 추가 휴공가: ${additionalLeave.length}명`;if(additionalLeave.length>0)additionalLeave.forEach(i=>{afternoon+=`\n  ◦ ${i}`;});
 
