@@ -312,11 +312,9 @@ outline: none;
 
 <script>
 const _CM = new URLSearchParams(location.search).get('cm') || '';
-const PROFILES_KEY = `report_profiles_v2${_CM ? '_' + _CM : ''}`;rch).get('cm') || '';
 const PROFILES_KEY = `report_profiles_v2${_CM ? '_' + _CM : ''}`;
 const ACTIVE_IDX_KEY = 'report_active_idx';  // 마지막 선택 프로파일 기억
 
-// 전역 변수 — IIFE보다 먼저 선언
 let activeIdx = -1;
 let reports   = { morning:'', afternoon:'', final:'' };
 let activeTab = 'morning';
@@ -658,8 +656,8 @@ function saveMorningLeave() {
     const addLeave = morningLeaveNames.length>0
       ? ctx.leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
       : ctx.leaveList;
-    let aft=`${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: ${ctx.presentCount}명\n• 외출: ${ctx.outing.length}명`;
-    if(ctx.outing.length>0)ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+    let aft=`${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${ctx.outing.length}명`;
+    if(ctx.outing.length>0)ctx.outing.forEach(({namenn)=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
     aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
     reports.afternoon=aft;
     if(activeTab==='afternoon') document.getElementById('report-text').textContent=aft;
