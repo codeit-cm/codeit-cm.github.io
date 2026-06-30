@@ -725,15 +725,12 @@ function clearData() {
   document.getElementById('report-card').style.display='none';
   reports={ morning:'', afternoon:'', final:'' };
   window._analyzeContext=null;
-  document.getElementById('morning-leave-input').value='';
-  morningLeaveNames=[];
-  const saveBtn=document.getElementById('save-morning-btn');if(saveBtn)saveBtn.classList.remove('saved');
   setStatus('','');
 }
 
 function clearAll() {
   clearData();
-  setStatus('출결 데이터 및 오전 휴공가가 초기화되었습니다.','');
+  setStatus('출결 데이터가 초기화되었습니다. 오전 휴공가는 유지됩니다.','');
 }
 </script>
 </body>
