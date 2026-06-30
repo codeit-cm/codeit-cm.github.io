@@ -456,6 +456,13 @@ document.addEventListener('keydown', e => {
   if (profiles.length === 0) toggleAddForm();
   loadMorningLeave();
 })();
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) {
+    const ml=document.getElementById('morning-leave-input'); if(ml)ml.value='';
+    morningLeaveNames=[];
+    const sb=document.getElementById('save-morning-btn'); if(sb)sb.classList.remove('saved');
+  }
+});
 
 function handleFile(e) {
 const file = e.target.files[0];
@@ -726,7 +733,7 @@ function clearData() {
 
 function clearAll() {
   clearData();
-  setStatus('출결 데이터가 초기화되었습니다. 오전 휴공가 저장 내역은 유지됩니다.','');
+  setStatus('출결 데이터 및 오전 휴공가가 초기화되었습니다.','');
 }
 </script>
 </body>
