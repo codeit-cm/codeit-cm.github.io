@@ -311,7 +311,9 @@ outline: none;
 </div>
 
 <script>
-const PROFILES_KEY   = 'report_profiles_v2';
+const _CM = new URLSearchParams(location.search).get('cm') || '';
+const PROFILES_KEY = `report_profiles_v2${_CM ? '_' + _CM : ''}`;rch).get('cm') || '';
+const PROFILES_KEY = `report_profiles_v2${_CM ? '_' + _CM : ''}`;
 const ACTIVE_IDX_KEY = 'report_active_idx';  // 마지막 선택 프로파일 기억
 
 // 전역 변수 — IIFE보다 먼저 선언
