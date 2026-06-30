@@ -657,7 +657,7 @@ function saveMorningLeave() {
       ? ctx.leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
       : ctx.leaveList;
     let aft=`${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${ctx.outing.length}명`;
-    if(ctx.outing.length>0)ctx.outing.forEach(({namenn)=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
+    if(ctx.outing.length>0)ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
     aft+=`\n• 추가 휴공가: ${addLeave.length}명`;if(addLeave.length>0)addLeave.forEach(i=>{aft+=`\n  ◦ ${i}`;});
     reports.afternoon=aft;
     if(activeTab==='afternoon') document.getElementById('report-text').textContent=aft;
