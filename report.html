@@ -718,6 +718,9 @@ function clearData() {
   document.getElementById('report-card').style.display='none';
   reports={ morning:'', afternoon:'', final:'' };
   window._analyzeContext=null;
+  document.getElementById('morning-leave-input').value='';
+  morningLeaveNames=[];
+  const saveBtn=document.getElementById('save-morning-btn');if(saveBtn)saveBtn.classList.remove('saved');
   setStatus('','');
 }
 
