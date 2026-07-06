@@ -357,14 +357,26 @@ function loadMorningLeave() {
 
 }
 
+let _clearArmed = false;
 function clearMorningLeave() {
-  if (!confirm('오전 휴공가 저장 내역을 초기화할까요?')) return;
+  const btn = document.getElementById('clear-morning-btn');
+  if (!_clearArmed) {
+    _clearArmed = true;
+    if (btn) { btn.textContent = '한 번 더 클릭하면 초기화'; btn.style.color = '#e5534b'; }
+    setTimeout(() => {
+      _clearArmed = false;
+      if (btn) { btn.textContent = '초기화'; btn.style.color = '#aaa'; }
+    }, 3000);
+    return;
+  }
+  _clearArmed = false;
+  if (btn) { btn.textContent = '초기화'; btn.style.color = '#aaa'; }
   localStorage.removeItem(getMorningLeaveKey());
   morningLeaveNames = [];
   const mlInput = document.getElementById('morning-leave-input');
   if (mlInput) mlInput.value = '';
-  const btn = document.getElementById('save-morning-btn');
-  if (btn) btn.classList.remove('saved');
+  const saveBtn = document.getElementById('save-morning-btn');
+  if (saveBtn) saveBtn.classList.remove('saved');
 }
 
 function switchProfile(i) {
@@ -511,7 +523,7 @@ function parseRows(text) {
   if (row.length || cell) { row.push(cell.trim()); rows.push(row); }
   return rows;
 }
-function isEmpty(v) { return !v || v === '-' || v === '\u2013' || v === '' || v === 'null' || v === 'undefined'; }
+function isEmpty(v) { return !v || v === '-' || v === '–' || v === '' || v === 'null' || v === 'undefined'; }
 
 function parseTime(s) {
   if (isEmpty(s)) return null;
