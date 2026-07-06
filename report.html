@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2026-07-06.2: 노션 임베드 초기화 버튼 수정 + 분석 전 저장 시 오류 수정 -->
+<!-- v2026-07-06.3: 초기화 한 번 클릭으로 변경 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -358,20 +358,7 @@ function loadMorningLeave() {
 
 }
 
-let _clearArmed = false;
 function clearMorningLeave() {
-  const btn = document.getElementById('clear-morning-btn');
-  if (!_clearArmed) {
-    _clearArmed = true;
-    if (btn) { btn.textContent = '한 번 더 클릭하면 초기화'; btn.style.color = '#e5534b'; }
-    setTimeout(() => {
-      _clearArmed = false;
-      if (btn) { btn.textContent = '초기화'; btn.style.color = '#aaa'; }
-    }, 3000);
-    return;
-  }
-  _clearArmed = false;
-  if (btn) { btn.textContent = '초기화'; btn.style.color = '#aaa'; }
   localStorage.removeItem(getMorningLeaveKey());
   morningLeaveNames = [];
   const mlInput = document.getElementById('morning-leave-input');
