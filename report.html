@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2026-07-06.5: 버튼 크기 통일 + 휴공가 상태·공가 사유 표시 -->
+<!-- v2026-07-06.7: 입력창 이름만 표시 + 공가 사유 '공가 - 사유' 형식 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -353,7 +353,7 @@ function loadMorningLeave() {
   try { saved = JSON.parse(localStorage.getItem(key) || '[]'); } catch {}
   morningLeaveNames = saved;
   const mlInput = document.getElementById('morning-leave-input');
-  if (mlInput) mlInput.value = morningLeaveNames.join(', ');
+  if (mlInput) mlInput.value = morningLeaveNames.map(s=>s.split('(')[0].trim()).join(', ');
   const btn = document.getElementById('save-morning-btn');
   if (btn) btn.classList.toggle('saved', morningLeaveNames.length > 0);
 
@@ -596,7 +596,7 @@ function analyze() {
     const leaveReasonRaw= c.leaveReason>=0 ? (r[c.leaveReason]||'') : '';
     if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) {
       const leaveLabel = leaveStatusRaw.includes('공가') && !isEmpty(leaveReasonRaw)
-        ? `${leaveStatusRaw}: ${leaveReasonRaw}` : leaveStatusRaw;
+        ? `${leaveStatusRaw} - ${leaveReasonRaw}` : leaveStatusRaw;
       leaveList.push(`${name}(${leaveLabel})`); return;
     }
     const entryMin    = parseTime(entryRaw);
@@ -620,7 +620,7 @@ function analyze() {
   const alreadySaved= saveBtn && saveBtn.classList.contains('saved');
   if (!alreadySaved) {
     const mlInput = document.getElementById('morning-leave-input');
-    if (mlInput && morningLeaveNames.length === 0) mlInput.value = leaveList.join(', ');
+    if (mlInput && morningLeaveNames.length === 0) mlInput.value = leaveList.map(item=>item.split('(')[0].trim()).join(', ');
   }
 
   window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult, late:[...late], absent:[...absent], lateAbsentCount };
@@ -664,7 +664,13 @@ function switchTab(tab) {
 
 function saveMorningLeave() {
   const mlInputEl = document.getElementById('morning-leave-input');
-  morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s=>s.trim()).filter(Boolean);
+  // 입력창에는 이름만 표시되므로, 분석 결과/기존 저장분에서 상태·사유 라벨을 찾아 붙임
+  const typedNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s=>s.trim()).filter(Boolean);
+  const labelSources = [...(((window._analyzeContext||{}).leaveList)||[]), ...morningLeaveNames];
+  morningLeaveNames = typedNames.map(n => {
+    const nm = n.split('(')[0].trim();
+    return labelSources.find(l => l.split('(')[0].trim() === nm) || n;
+  });
   localStorage.setItem(getMorningLeaveKey(), JSON.stringify(morningLeaveNames));
   const mlNames = morningLeaveNames.map(s=>s.split('(')[0].trim());
   const ctx = window._analyzeContext;
