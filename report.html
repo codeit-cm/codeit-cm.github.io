@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2026-07-06.3: 초기화 한 번 클릭으로 변경 -->
+<!-- v2026-07-06.5: 버튼 크기 통일 + 휴공가 상태·공가 사유 표시 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -258,7 +258,7 @@ outline: none;
 <input type="text" class="morning-leave-input" id="morning-leave-input" placeholder="자동 저장 또는 직접 입력" style="width:100%;" />
 <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
 <button class="btn btn-sm btn-save-morning" id="save-morning-btn" onclick="saveMorningLeave()">오전 휴공가 저장</button>
-<button class="btn btn-sm" id="clear-morning-btn" onclick="clearMorningLeave()" style="font-size:11px;padding:4px 8px;color:#aaa;border-color:#e5e5e3;">초기화</button>
+<button class="btn btn-sm" id="clear-morning-btn" onclick="clearMorningLeave()" style="color:#aaa;border-color:#e5e5e3;">초기화</button>
 </div>
 </div>
 <div class="settings-row" style="flex-direction:column;flex:1;min-width:180px;gap:6px;">
@@ -287,6 +287,7 @@ outline: none;
 <div class="col-map-row"><label>외출시작</label><input id="col-out-start" type="number" value="9" min="0" /></div>
 <div class="col-map-row"><label>외출복귀</label><input id="col-out-end" type="number" value="10" min="0" /></div>
 <div class="col-map-row"><label>휴공가상태</label><input id="col-leave-status" type="number" value="12" min="0" /></div>
+<div class="col-map-row"><label>휴공가사유</label><input id="col-leave-reason" type="number" value="13" min="0" /></div>
 </div>
 <div class="row">
 <button class="btn btn-purple" onclick="analyze()">분석하기</button>
@@ -550,6 +551,7 @@ function analyze() {
     outStart:    detected.outStart>=0 ? detected.outStart: parseInt(document.getElementById('col-out-start').value),
     outEnd:      detected.outEnd  >=0 ? detected.outEnd  : parseInt(document.getElementById('col-out-end').value),
     leaveStatus: parseInt(document.getElementById('col-leave-status').value),
+    leaveReason: parseInt(document.getElementById('col-leave-reason').value),
   };
   document.getElementById('col-name').value      = c.name;
   document.getElementById('col-status').value    = c.status;
@@ -591,7 +593,12 @@ function analyze() {
     const outStartRaw   = c.outStart   >=0 ? (r[c.outStart]||'')   : '';
     const outEndRaw     = c.outEnd     >=0 ? (r[c.outEnd]||'')     : '';
     const leaveStatusRaw= c.leaveStatus>=0 ? (r[c.leaveStatus]||'') : '';
-    if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) { leaveList.push(`${name}(${leaveStatusRaw})`); return; }
+    const leaveReasonRaw= c.leaveReason>=0 ? (r[c.leaveReason]||'') : '';
+    if (['공가','휴가'].some(kw=>leaveStatusRaw.includes(kw))) {
+      const leaveLabel = leaveStatusRaw.includes('공가') && !isEmpty(leaveReasonRaw)
+        ? `${leaveStatusRaw}: ${leaveReasonRaw}` : leaveStatusRaw;
+      leaveList.push(`${name}(${leaveLabel})`); return;
+    }
     const entryMin    = parseTime(entryRaw);
     const exitMin     = parseTime(exitRaw);
     const outStartMin = parseTime(outStartRaw);
@@ -613,7 +620,7 @@ function analyze() {
   const alreadySaved= saveBtn && saveBtn.classList.contains('saved');
   if (!alreadySaved) {
     const mlInput = document.getElementById('morning-leave-input');
-    if (mlInput && morningLeaveNames.length === 0) mlInput.value = leaveList.map(item=>item.split('(')[0]).join(', ');
+    if (mlInput && morningLeaveNames.length === 0) mlInput.value = leaveList.join(', ');
   }
 
   window._analyzeContext = { leaveList:[...leaveList], outing:[...outing], presentCount, courseLabel, dateStr, reviewCount, reviewResult, late:[...late], absent:[...absent], lateAbsentCount };
@@ -622,8 +629,9 @@ function analyze() {
   if(lateAbsentCount>0){late.forEach(({name,time})=>{morning+=`\n  ◦ ${name}(지각 ${time})`;});absent.forEach(({name})=>{morning+=`\n  ◦ ${name}(미입실)`;});}
   morning+=`\n• 휴공가: ${leaveList.length}명`;if(leaveList.length>0)leaveList.forEach(i=>{morning+=`\n  ◦ ${i}`;});
 
-  const additionalLeave = morningLeaveNames.length>0
-    ? leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
+  const mlSavedNames = morningLeaveNames.map(s=>s.split('(')[0].trim());
+  const additionalLeave = mlSavedNames.length>0
+    ? leaveList.filter(item=>!mlSavedNames.includes(item.split('(')[0]))
     : leaveList;
   let afternoon=`${courseLabel}${dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${outing.length}명`;
   if(outing.length>0)outing.forEach(({name,startTime,endTime})=>{afternoon+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
@@ -658,10 +666,11 @@ function saveMorningLeave() {
   const mlInputEl = document.getElementById('morning-leave-input');
   morningLeaveNames = (mlInputEl ? mlInputEl.value : '').split(',').map(s=>s.trim()).filter(Boolean);
   localStorage.setItem(getMorningLeaveKey(), JSON.stringify(morningLeaveNames));
+  const mlNames = morningLeaveNames.map(s=>s.split('(')[0].trim());
   const ctx = window._analyzeContext;
   if (ctx) {
-    const addLeave = morningLeaveNames.length>0
-      ? ctx.leaveList.filter(item=>!morningLeaveNames.includes(item.split('(')[0]))
+    const addLeave = mlNames.length>0
+      ? ctx.leaveList.filter(item=>!mlNames.includes(item.split('(')[0]))
       : ctx.leaveList;
     let aft=`${ctx.courseLabel}${ctx.dateStr} 오후 출결 현황 공유\n• ZEP 접속자: nn명\n• 외출: ${ctx.outing.length}명`;
     if(ctx.outing.length>0)ctx.outing.forEach(({name,startTime,endTime})=>{aft+=`\n  ◦ ${name}: ${startTime}~${endTime||'미복귀'} 외출`;});
@@ -675,7 +684,7 @@ function saveMorningLeave() {
     btn.textContent='저장됨 ✓';
     setTimeout(()=>{ btn.textContent='오전 휴공가 저장'; }, 1500);
   if(ctx && ctx.absent!==undefined){
-    const filteredAbsent=(ctx.absent||[]).filter(({name})=>!morningLeaveNames.includes(name));
+    const filteredAbsent=(ctx.absent||[]).filter(({name})=>!mlNames.includes(name));
     const newLACount=filteredAbsent.length+(ctx.late||[]).length;
     let mor=`${ctx.courseLabel}${ctx.dateStr} 오전 출결 현황 공유\n• 출석: ${ctx.presentCount}명\n• 지각/미입실: ${newLACount}명`;
     if(newLACount>0){(ctx.late||[]).forEach(({name,time})=>{mor+=`\n  ◦ ${name}(지각 ${time})`;});filteredAbsent.forEach(({name})=>{mor+=`\n  ◦ ${name}(미입실)`;});}
