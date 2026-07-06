@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2026-07-06.1: 노션 임베드 초기화 버튼 수정 -->
+<!-- v2026-07-06.2: 노션 임베드 초기화 버튼 수정 + 분석 전 저장 시 오류 수정 -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -687,7 +687,7 @@ function saveMorningLeave() {
     btn.classList.add('saved');
     btn.textContent='저장됨 ✓';
     setTimeout(()=>{ btn.textContent='오전 휴공가 저장'; }, 1500);
-  if(ctx.absent!==undefined){
+  if(ctx && ctx.absent!==undefined){
     const filteredAbsent=(ctx.absent||[]).filter(({name})=>!morningLeaveNames.includes(name));
     const newLACount=filteredAbsent.length+(ctx.late||[]).length;
     let mor=`${ctx.courseLabel}${ctx.dateStr} 오전 출결 현황 공유\n• 출석: ${ctx.presentCount}명\n• 지각/미입실: ${newLACount}명`;
